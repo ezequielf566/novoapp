@@ -231,7 +231,10 @@ async function loadPage(newIdx){
 
   mount.appendChild(svg);
   svgEl = svg;
-  resetPageCounters();
+  
+// pintura.js hook
+document.dispatchEvent(new CustomEvent(\"svgLoaded\", { detail: { svgRoot: svg, pageNumber: idx } }));
+resetPageCounters();
   // Atualiza cabeçalho e mantém progresso de clicks
   updateProgressUI();
 
