@@ -231,10 +231,13 @@ async function loadPage(newIdx){
 
   mount.appendChild(svg);
   svgEl = svg;
-  
-// pintura.js hook
-document.dispatchEvent(new CustomEvent(\"svgLoaded\", { detail: { svgRoot: svg, pageNumber: idx } }));
-resetPageCounters();
+
+  // pintura.js hook
+  document.dispatchEvent(new CustomEvent("svgLoaded", {
+    detail: { svgRoot: svg, pageNumber: idx }
+  }));
+
+  resetPageCounters();
   // Atualiza cabeçalho e mantém progresso de clicks
   updateProgressUI();
 
@@ -307,8 +310,8 @@ async function savePNG(){
   inlineComputedStyles(clone);
   
   
-forceBlackStrokes(clone);
-// Ensure stroked outlines are black on export (avoid white-stroke bug)
+  forceBlackStrokes(clone);
+  // Ensure stroked outlines are black on export (avoid white-stroke bug)
   try{
     clone.querySelectorAll('*').forEach(function(el){
       if(!el.getAttribute) return;
@@ -325,7 +328,7 @@ forceBlackStrokes(clone);
     });
   }catch(_){}
 
-clone.removeAttribute('width');
+  clone.removeAttribute('width');
   clone.removeAttribute('height');
 
   if(!clone.hasAttribute('viewBox')){
@@ -347,7 +350,7 @@ clone.removeAttribute('width');
 
   // 2) Serializar e carregar
   forceBlackStrokes(clone);
-const serializer = new XMLSerializer();
+  const serializer = new XMLSerializer();
   const svgText = serializer.serializeToString(clone);
   const svgBlob = new Blob([svgText], {type:'image/svg+xml;charset=utf-8'});
   const url = URL.createObjectURL(svgBlob);
@@ -460,6 +463,7 @@ function toggleSound(){ /* removed: sounds always on */ }
   setLabel();
   loadPage(0);
 })();
+
 // === Stars & Progress (14-click model) ===
 const STAR_STORAGE_KEY = 'pp_stars_v2';
 const CLICK_STORAGE_KEY = 'pp_clicks_v2';
