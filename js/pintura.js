@@ -5,8 +5,10 @@
 
 console.log("%c[PINTURA] pintura.js carregado", "color:#00A8FF; font-weight:bold;");
 
-// LocalStorage seguro
-function loadJSON(key, fallback) {
+/* =====================================================
+   0. FUNÇÕES SEGURAS DE STORAGE (NÃO CONFLITAM)
+   ===================================================== */
+function PP_loadJSON(key, fallback) {
     try {
         const v = localStorage.getItem(key);
         return v ? JSON.parse(v) : fallback;
@@ -16,7 +18,7 @@ function loadJSON(key, fallback) {
     }
 }
 
-function saveJSON(key, data) {
+function PP_saveJSON(key, data) {
     try {
         localStorage.setItem(key, JSON.stringify(data));
     } catch (e) {
@@ -24,12 +26,14 @@ function saveJSON(key, data) {
     }
 }
 
-// Banco de cores por página
-let PAGE_COLORS = loadJSON("pp_pageColors", {}); 
-let SVG_ID_MAP  = loadJSON("pp_svgIdMap", {});   // Para manter IDs estáveis
+/* =====================================================
+   1. BANCO DE CORES E MAPA DE IDs
+   ===================================================== */
+let PAGE_COLORS = PP_loadJSON("pp_pageColors", {});
+let SVG_ID_MAP  = PP_loadJSON("pp_svgIdMap", {});
 
 /* =====================================================
-   1. GERAR IDs POR ELEMENTO DO SVG
+   2. GERAR IDs ÚNICOS POR ELEMENTO DO SVG
    ===================================================== */
 function generateIdsForSvg(svgRoot, pageNumber) {
     console.log("%c[ID] Gerando IDs para SVG da página " + pageNumber, "color:#8E44AD; font-weight:bold;");
@@ -39,11 +43,9 @@ function generateIdsForSvg(svgRoot, pageNumber) {
     let index = 0;
 
     svgRoot.querySelectorAll("path, rect, circle, polygon, ellipse, polyline").forEach(el => {
-        // Se já existe ID salvo → reaplica
         if (SVG_ID_MAP[pageNumber][index]) {
             el.id = SVG_ID_MAP[pageNumber][index];
         } else {
-            // Se o elemento já tem ID natural → usa ele
             if (!el.id) {
                 el.id = "pp_" + index;
             }
@@ -52,43 +54,39 @@ function generateIdsForSvg(svgRoot, pageNumber) {
         index++;
     });
 
-    saveJSON("pp_svgIdMap", SVG_ID_MAP);
+    PP_saveJSON("pp_svgIdMap", SVG_ID_MAP);
     console.log("[ID] Total de elementos com ID:", index);
 }
 
 /* =====================================================
-   2. SALVAR COR DA PARTE PINTADA
+   3. SALVAR COR DE UM ELEMENTO PINTADO
    ===================================================== */
 function saveElementColor(pageNumber, elementId, color) {
     if (!PAGE_COLORS[pageNumber]) PAGE_COLORS[pageNumber] = {};
-
     PAGE_COLORS[pageNumber][elementId] = color;
-    saveJSON("pp_pageColors", PAGE_COLORS);
+    PP_saveJSON("pp_pageColors", PAGE_COLORS);
 
-    console.log("%c[PAINT] Salvo:", "color:#27AE60; font-weight:bold;", 
-                "Página:", pageNumber, "| Elemento:", elementId, "| Cor:", color);
+    console.log("%c[PAINT] Salvo → Página:", "color:#27AE60; font-weight:bold;", pageNumber, "| Elemento:", elementId, "| Cor:", color);
 }
 
 /* =====================================================
-   3. REMOVER COR SALVA (BORRACHA / VOLTAR AO PADRÃO)
+   4. REMOVER COR SALVA (BORRACHA)
    ===================================================== */
 function removeElementColor(pageNumber, elementId) {
     if (PAGE_COLORS[pageNumber]) {
         delete PAGE_COLORS[pageNumber][elementId];
-        saveJSON("pp_pageColors", PAGE_COLORS);
+        PP_saveJSON("pp_pageColors", PAGE_COLORS);
         console.log("%c[PAINT] Removido registro:", "color:#E67E22; font-weight:bold;", elementId);
     }
 }
 
 /* =====================================================
-   4. RESTAURAR PINTURA AO ABRIR A PÁGINA
+   5. RESTAURAR PINTURA AO CARREGAR A PÁGINA
    ===================================================== */
 function applySavedColors(svgRoot, pageNumber) {
-    console.log("%c[RESTORE] Restaurando pintura da página " + pageNumber,
-                "color:#2980B9; font-weight:bold;");
+    console.log("%c[RESTORE] Restaurando pintura da página " + pageNumber, "color:#2980B9; font-weight:bold;");
 
     const saved = PAGE_COLORS[pageNumber];
-
     if (!saved) {
         console.log("[RESTORE] Nada salvo para esta página.");
         return;
@@ -108,7 +106,7 @@ function applySavedColors(svgRoot, pageNumber) {
 }
 
 /* =====================================================
-   5. DEBUG MANUAL (para você testar)
+   6. DEBUG MANUAL
    ===================================================== */
 function debugPaintData(pageNumber) {
     console.log("------ DEBUG PINTURA PAGE " + pageNumber + " ------");
@@ -117,25 +115,16 @@ function debugPaintData(pageNumber) {
 }
 
 /* =====================================================
-   6. INTEGRAÇÃO AUTOMÁTICA COM O SCRIPT PRINCIPAL
+   7. EVENTO DE ATIVAÇÃO (CHAMADO PELO script.js)
    ===================================================== */
-
 document.addEventListener("svgLoaded", function (e) {
+    console.log("%c[EVENT] svgLoaded → pintura.js ativado", "color:#16A085; font-weight:bold;");
+
     const svgRoot = e.detail.svgRoot;
     const page = e.detail.pageNumber;
 
-    console.log("%c[EVENT] svgLoaded → pintura.js ativado", "color:#16A085; font-weight:bold;");
-
     generateIdsForSvg(svgRoot, page);
     applySavedColors(svgRoot, page);
+
+    console.log("%c[PINTURA] Página " + page + " inicializada sem conflitos", "color:#2ECC71; font-weight:bold;");
 });
-
-/*
- Agora falta apenas o script.js disparar o evento após carregar o SVG:
-
-    document.dispatchEvent(new CustomEvent("svgLoaded", {
-        detail: { svgRoot, pageNumber }
-    }));
-
-Se precisar, posso inserir essa linha no seu script.js sem mexer em mais nada.
-*/
