@@ -487,32 +487,17 @@ function toggleSound(){ /* removed: sounds always on */ }
 
   setLabel();
   loadPage(0);
-
-  // Carregar progresso salvo (estrelas / clicks / unique) de IndexedDB
-  try{
-    if (typeof window.PPDB_loadProgress === 'function'){
-      window.PPDB_loadProgress().then(function(data){
-        if (!data) return;
-        try{
-          if (data.STARS) STARS = data.STARS;
-          if (data.CLICKS) CLICKS = data.CLICKS;
-          if (data.UNIQUE) UNIQUE = data.UNIQUE;
-        }catch(e){}
-        try{ updateProgressUI(); }catch(e){}
-      }).catch(function(err){
-        console.warn('[PP] Erro ao carregar progresso do IndexedDB:', err);
-      });
-    }
-  }catch(e){
-    console.warn('[PP] PPDB_loadProgress não disponível:', e);
-  }
 })();
 
 // === Stars & Progress (14-click model) ===
-// Agora usando IndexedDB via pintura.js (PPDB_loadProgress / PPDB_saveProgress)
+const STAR_STORAGE_KEY = 'pp_stars_v2';
+const CLICK_STORAGE_KEY = 'pp_clicks_v2';
 
-let STARS = {};   // map: pageId -> true
-let CLICKS = {};  // map: pageId -> integer (progress clicks)
+function loadJSON(k){ try{ return JSON.parse(localStorage.getItem(k)||'{}'); }catch(e){ return {}; } }
+function saveJSON(k, v){ try{ localStorage.setItem(k, JSON.stringify(v||{})); }catch(e){} }
+
+let STARS = loadJSON(STAR_STORAGE_KEY);   // map: pageId -> true
+let CLICKS = loadJSON(CLICK_STORAGE_KEY); // map: pageId -> integer (progress clicks)
 
 const AUTO_AWARD_CLICKS = 14;
 
@@ -540,21 +525,16 @@ function updateProgressUI(){
 function awardStarOnce(){
   const id = pageId();
   if(!STARS[id]){
-    STARS[id] = true;
-    try{
-      if (typeof window.PPDB_saveProgress === 'function') {
-        const clicks = Number(CLICKS[id]||0);
-        const unique = typeof getUniqueCount === 'function' ? getUniqueCount(id) : 0;
-        window.PPDB_saveProgress(id, { star: true, clicks, unique });
-      }
-    }catch(e){}
+    STARS[id] = true; saveJSON(STAR_STORAGE_KEY, STARS);
     try{ const el = document.getElementById('starSound'); if(el){ el.currentTime=0; el.play().catch(()=>{});} }catch(e){}
     updateProgressUI();
   }
 }
 
+
 // === Unique-paint tracker (counts each element at most once) ===
-let UNIQUE = {}; // map: pageId -> count
+const UNIQUE_STORAGE_KEY = 'pp_uniquecount_v1';
+let UNIQUE = loadJSON(UNIQUE_STORAGE_KEY); // map: pageId -> count
 
 const paintedSet = new WeakSet(); // in-memory for current page
 
@@ -564,16 +544,7 @@ function isWhiteOrNone(v){
 }
 
 function getUniqueCount(id){ return Number(UNIQUE[id]||0); }
-function setUniqueCount(id, n){
-  UNIQUE[id] = Number(n||0);
-  try{
-    if (typeof window.PPDB_saveProgress === 'function') {
-      const clicks = Number(CLICKS[id]||0);
-      const star = !!STARS[id];
-      window.PPDB_saveProgress(id, { star, clicks, unique: UNIQUE[id] });
-    }
-  }catch(e){}
-}
+function setUniqueCount(id, n){ UNIQUE[id] = Number(n||0); saveJSON(UNIQUE_STORAGE_KEY, UNIQUE); }
 
 function resetPageCounters(){
   // called on page load
@@ -592,13 +563,7 @@ function handleUniquePaint(el, prev, next){
   const current = getUniqueCount(id) + 1;
   setUniqueCount(id, current);
   // mirror into CLICKS for UI/debug parity
-  CLICKS[id] = current;
-  try{
-    if (typeof window.PPDB_saveProgress === 'function') {
-      const star = !!STARS[id];
-      window.PPDB_saveProgress(id, { star, clicks: CLICKS[id], unique: current });
-    }
-  }catch(e){}
+  CLICKS[id] = current; saveJSON(CLICK_STORAGE_KEY, CLICKS);
   if(current >= AUTO_AWARD_CLICKS){ awardStarOnce(); }
 }
 function incClickIfChanged(prevFill, nextFill){
@@ -611,22 +576,18 @@ function incClickIfChanged(prevFill, nextFill){
   if(STARS[pageId()]) return; // já ganhou
   const id = pageId();
   const current = Number(CLICKS[id]||0) + 1;
-  CLICKS[id] = current;
-  try{
-    if (typeof window.PPDB_saveProgress === 'function') {
-      const star = !!STARS[id];
-      const unique = typeof getUniqueCount === 'function' ? getUniqueCount(id) : 0;
-      window.PPDB_saveProgress(id, { star, clicks: current, unique });
-    }
-  }catch(e){}
+  CLICKS[id] = current; saveJSON(CLICK_STORAGE_KEY, CLICKS);
   if(current >= AUTO_AWARD_CLICKS){ awardStarOnce(); }
 }
+
 
 window.PP_DBG = function(){ 
   const id = pageId();
   console.log('[PP] page:', id, 'stars:', !!STARS[id], 'uniqueCount:', (UNIQUE[id]||0), 'clicks:', (CLICKS[id]||0));
   console.log('[PP] totalStars:', Object.keys(STARS).filter(k=>STARS[k]).length, 'of', PAGES.length);
 };
+
+
 // Sistema de zoom (3 níveis: 1, 1.5, 2)
 let zoomLevels = [1, 1.5, 2];
 let currentZoomIndex = 0;
