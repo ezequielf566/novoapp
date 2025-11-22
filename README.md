@@ -1,4 +1,4 @@
-Meu aplicativo é um sistema de pintura digital inteligente em SVG, ele não usa pintura por números nem arrastar o dedo; ele identifica automaticamente o que é preenchimento pintável e o que é traço, tudo pre configurado no Illustrator e interpretado pelo script, tornando a experiência muito mais intuitiva para crianças e adolescentes.
+Meu aplicativo é um sistema de pintura digital inteligente em SVG, graças a Ia conseguir torna real e assimilando os conteúdos do imersão, o projeto pegou forma, ele não usa pintura por números nem arrastar o dedo; ele identifica automaticamente o que é preenchimento pintável e o que é traço, tudo pre configurado no próprio svg, e interpretado pelo script, tornando a experiência muito mais intuitiva para crianças e adolescentes.
 
 O progresso é totalmente salvo, página por página, graças a 5 chaves internas no localStorage que eu projetei e organizei com apoio da IA para modelar meu raciocínio e estruturar tudo da forma mais estável possível. Essas 5 chaves são o núcleo do app:
 
@@ -25,7 +25,7 @@ O app funciona como um livro digital de colorir, onde cada área pintável é in
 O usuário pode voltar dias depois e todo o progresso continua intacto.
 Cada pintura gera IDs, salva cores, contabiliza progresso, libera estrelas e permite até exportar o desenho final em PNG.
 
-Tudo isso rodando direto no navegador, consigo implementar off-line via service worker ou transformar num pwa. 
+Tudo isso rodando direto no navegador. 
 
 Esse é o objetivo do meu projeto:
 uma nova forma de pintar, mais intuitiva, mais inteligente e totalmente persistente.
