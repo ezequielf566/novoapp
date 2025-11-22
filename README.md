@@ -1,31 +1,26 @@
-Meu aplicativo é um sistema de pintura digital inteligente em SVG, graças a IA conseguir torna real e assimilando os conteúdos do imersão, o projeto pegou forma, ele não usa pintura por números nem arrastar o dedo; ele identifica automaticamente o que é preenchimento pintável e o que é traço, tudo pre configurado no próprio svg, e interpretado pelo script, tornando a experiência muito mais intuitiva para crianças e adolescentes.
+Meu aplicativo é um sistema de pintura digital inteligente em SVG. Comecei estudando e desenvolvendo sozinho, usando IA para organizar minha lógica e arquitetura, mas foi no Imersão Dev Alura com Google que consegui evoluir de verdade — entender melhor os conceitos, refinar o código e transformar a ideia em algo funcional.
 
-O progresso é totalmente salvo, página por página, graças a 5 chaves internas no localStorage que eu projetei e organizei com apoio da IA para modelar meu raciocínio e estruturar tudo da forma mais estável possível. Essas 5 chaves são o núcleo do app:
+O diferencial do app está no script que interpreta o SVG.
+Ele identifica automaticamente:
 
-1️⃣ pp_pageColors — Pintura
-Guarda todas as cores aplicadas em todas as páginas e em cada parte do SVG.
-Sem essa chave, nenhuma pintura existe.
+áreas pintáveis → preenchimento branco e sem traço
 
-2️⃣ pp_svgIdMap — IDs Estáveis
-É o "DNA" dos SVGs.
-Mapeia todos os IDs gerados automaticamente para que, ao recarregar, as cores caiam no lugar certo.
+áreas não pintáveis → sem preenchimento, com traço preto
 
-3️⃣ pp_stars_v2 — Estrelas Conquistadas
-Indica quais páginas já ganharam estrela depois da pintura completa.
 
-4️⃣ pp_clicks_v2 — Contagem de Cliques
-Rastreia quantos toques de pintura o usuário deu em cada página.
-Ao chegar em 14 cliques, a página ganha uma estrela.
+O usuário só toca e pinta exatamente onde é permitido, sem números e sem arrastar o dedo.
+Essa lógica combina configuração no Illustrator com interpretação automática em JavaScript.
 
-5️⃣ pp_uniquecount_v1 — Progresso Real
-Conta quantos elementos únicos foram pintados em cada página, definindo o progresso visual e lógico.
+Além disso, todo o progresso é salvo graças a 5 chaves no localStorage, que eu projetei com apoio da IA para manter tudo organizado:
 
-O app funciona como um livro digital de colorir, onde cada área pintável é interpretada automaticamente.
+1️⃣ pp_pageColors – salva as cores aplicadas.
+2️⃣ pp_svgIdMap – mantém os IDs estáveis do SVG.
+3️⃣ pp_stars_v2 – registra estrelas concluídas.
+4️⃣ pp_clicks_v2 – conta os toques (14 = estrela).
+5️⃣ pp_uniquecount_v1 – mede o progresso real.
 
-O usuário pode voltar dias depois e todo o progresso continua intacto.
-Cada pintura gera IDs, salva cores, contabiliza progresso, libera estrelas e permite até exportar o desenho final em PNG.
+Com isso, o app funciona como um livro digital de colorir inteligente:
+interpreta o SVG sozinho, salva tudo automaticamente, libera conquistas, permite exportar em PNG e roda como TWA.
 
-Tudo isso rodando direto no navegador. 
-
-Esse é o objetivo do meu projeto:
-uma nova forma de pintar, mais intuitiva, mais inteligente e totalmente persistente.
+Meu objetivo foi criar uma experiência de pintura intuitiva, acessível e totalmente persistente, unindo o que aprendi sozinho, com IA e com o conteúdo do Imersão Dev.
+Esse projeto me fez evoluir muito nas áreas de lógica, leitura de SVG e organização de estado.
