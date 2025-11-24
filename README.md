@@ -20,7 +20,8 @@ Além disso, todo o progresso é salvo graças a 5 chaves no localStorage, que e
 5️⃣ pp_uniquecount_v1 – mede o progresso real.
 
 Com isso, o app funciona como um livro digital de colorir inteligente:
-interpreta o SVG sozinho, salva tudo automaticamente, libera conquistas, permite exportar em PNG e roda como TWA.
+interpreta o SVG sozinho, salva tudo automaticamente, libera conquistas, permite exportar em PNG.
 
 Meu objetivo foi criar uma experiência de pintura intuitiva, acessível e totalmente persistente, unindo o que aprendi sozinho, com IA e com o conteúdo do Imersão Dev.
+
 Esse projeto me fez evoluir muito nas áreas de lógica, leitura de SVG e organização de estado.
