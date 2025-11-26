@@ -57,9 +57,13 @@
       to   { transform: scale(1); opacity: 1; }
     }
     .rating-box h2 {
-      margin: 0 0 10px;
+      margin: 0;
       font-size: 1.6rem;
       color: #333;
+    }
+    .rating-stars {
+      font-size: 1.5rem;
+      margin: 6px 0 12px;
     }
     .rating-box p {
       font-size: 1rem;
@@ -134,15 +138,7 @@
       transition: box-shadow .3s ease;  
     }  
     .sw.custom.active { animation: glowPulse 1.4s ease-in-out infinite; }  
-    @keyframes hueShift {  
-      0%,100% { background-position: 0% 50%; }  
-      50% { background-position: 100% 50%; }  
-    }  
-    @keyframes glowPulse {  
-      0%, 100% { box-shadow: 0 0 8px 4px rgba(255,213,79,0.6); }  
-      50% { box-shadow: 0 0 12px 6px rgba(255,213,79,0.9); }  
-    }  
-
+      
     /* 🎨 Novo botão de cor personalizada */
     .sw.custom-picker {
       width: 36px;
@@ -159,14 +155,6 @@
       cursor: pointer;
       transition: transform .15s, box-shadow .25s;
     }
-    .sw.custom-picker:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px rgba(255,213,79,0.6);
-    }
-    .sw.custom-picker:active {
-      transform: scale(.9);
-      box-shadow: 0 0 0 3px #ffd54f;
-    }
   </style>  
 </head>  
 
@@ -175,7 +163,13 @@
 <!-- ⭐ NOVO — POP-UP AVALIAÇÃO -->
 <div id="ratingPopup">
   <div class="rating-box">
+
     <h2>⭐ Gostaria de avaliar?</h2>
+
+    <div class="rating-stars">
+      ⭐⭐⭐⭐⭐
+    </div>
+
     <p>Seu apoio ajuda o Pintando a Palavra a alcançar mais famílias. 💛</p>
 
     <div class="rating-buttons">
@@ -183,11 +177,11 @@
       <button id="rateLater" class="rating-btn rating-later">Depois</button>
       <button id="rateNever" class="rating-btn rating-never">Nunca</button>
     </div>
+
   </div>
 </div>
 
-<!-- RESTANTE DO SEU APP ABAIXO (100% preservado) -->
-
+<!-- RESTANTE DO APP -->
 <div id="loadingOverlay">  
   <div class="spinner"></div>  
   <div class="loading-text">🎨 Carregando artes...</div>  
@@ -262,10 +256,9 @@
   setTimeout(() => {
     if (jáMostrou) return;
 
-    const popup = document.getElementById("ratingPopup");
-    popup.classList.add("active");
+    document.getElementById("ratingPopup").classList.add("active");
     jáMostrou = true;
-  }, 180000); // 3 minutos = 180.000 ms
+  }, 180000);
 
   document.getElementById("rateNow").onclick = () => {
     localStorage.setItem("rating_never", "true");
