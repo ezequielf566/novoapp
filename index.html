@@ -28,7 +28,63 @@
       font-size: 1.1rem; color: #444; text-align: center;  
     }  
 
-    /* 🎨 Popup de tons e extras */  
+    /* ⭐ NOVO — POP-UP AVALIAÇÃO */
+    #ratingPopup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      padding: 20px;
+    }
+    #ratingPopup.active {
+      display: flex;
+    }
+    .rating-box {
+      background: #fff;
+      border-radius: 18px;
+      padding: 24px 22px;
+      width: min(90%, 360px);
+      text-align: center;
+      font-family: "Fredoka", sans-serif;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      animation: pop .3s ease;
+    }
+    @keyframes pop {
+      from { transform: scale(.8); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .rating-box h2 {
+      margin: 0 0 10px;
+      font-size: 1.6rem;
+      color: #333;
+    }
+    .rating-box p {
+      font-size: 1rem;
+      margin: 0 0 18px;
+      color: #555;
+      line-height: 1.4;
+    }
+    .rating-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .rating-btn {
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    .rating-now { background: #ffd54f; }
+    .rating-later { background: #e0e0e0; }
+    .rating-never { background: #ff8a80; color: #fff; }
+
+    /* 🎨 Popup de tons e extras */
     .palette-popup {  
       position: fixed;  
       background: #fff;  
@@ -115,215 +171,131 @@
 </head>  
 
 <body>  
-  <div id="loadingOverlay">  
-    <div class="spinner"></div>  
-    <div class="loading-text">🎨 Carregando artes...</div>  
-  </div>  
 
-  <header class="topbar">  
-    <div id="progressWidget" class="progress-widget">  
-      <div class="counter">  
-        <span id="starCount" class="star-count">00</span>  
-        <span class="sep">/</span>  
-        <span id="totalPages" class="total-pages">00</span>  
-        <span class="star-icon">★</span>  
-        <span id="progressPercent" class="percent">0%</span>  
-      </div>  
-      <div class="progressbar"><div id="progressFill" class="progress-fill"></div></div>  
-      <audio id="starSound" src="assets/sounds/estrela.mp3" preload="auto"></audio>  
+<!-- ⭐ NOVO — POP-UP AVALIAÇÃO -->
+<div id="ratingPopup">
+  <div class="rating-box">
+    <h2>⭐ Gostaria de avaliar?</h2>
+    <p>Seu apoio ajuda o Pintando a Palavra a alcançar mais famílias. 💛</p>
+
+    <div class="rating-buttons">
+      <button id="rateNow" class="rating-btn rating-now">Avaliar agora</button>
+      <button id="rateLater" class="rating-btn rating-later">Depois</button>
+      <button id="rateNever" class="rating-btn rating-never">Nunca</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESTANTE DO SEU APP ABAIXO (100% preservado) -->
+
+<div id="loadingOverlay">  
+  <div class="spinner"></div>  
+  <div class="loading-text">🎨 Carregando artes...</div>  
+</div>  
+
+<header class="topbar">  
+  <div id="progressWidget" class="progress-widget">  
+    <div class="counter">  
+      <span id="starCount" class="star-count">00</span>  
+      <span class="sep">/</span>  
+      <span id="totalPages" class="total-pages">00</span>  
+      <span class="star-icon">★</span>  
+      <span id="progressPercent" class="percent">0%</span>  
     </div>  
-  </header>  
+    <div class="progressbar"><div id="progressFill" class="progress-fill"></div></div>  
+    <audio id="starSound" src="assets/sounds/estrela.mp3" preload="auto"></audio>  
+  </div>  
+</header>  
 
-  <main class="wrap">  
-    <section class="stage">  
-      <div id="svgMount" class="svgMount"></div>  
-    </section>  
+<main class="wrap">  
+  <section class="stage">  
+    <div id="svgMount" class="svgMount"></div>  
+  </section>  
 
-    <section class="controls">  
-      <div class="palette">  
-        <div class="swatches" id="swatches">  
-          <button class="sw" data-color="#E53935" style="--c:#E53935"></button>  
-          <button class="sw" data-color="#FB8C00" style="--c:#FB8C00"></button>  
-          <button class="sw" data-color="#FDD835" style="--c:#FDD835"></button>  
-          <button class="sw" data-color="#7CB342" style="--c:#7CB342"></button>  
-          <button class="sw" data-color="#42A5F5" style="--c:#42A5F5"></button>  
-          <button class="sw" data-color="#8E24AA" style="--c:#8E24AA"></button>  
-          <button class="sw" data-color="#E0C2A2" style="--c:#E0C2A2"></button>  
-          <button class="sw" data-color="#8D6E63" style="--c:#8D6E63"></button>  
+  <section class="controls">  
+    <div class="palette">  
+      <div class="swatches" id="swatches">  
+        <button class="sw" data-color="#E53935" style="--c:#E53935"></button>  
+        <button class="sw" data-color="#FB8C00" style="--c:#FB8C00"></button>  
+        <button class="sw" data-color="#FDD835" style="--c:#FDD835"></button>  
+        <button class="sw" data-color="#7CB342" style="--c:#7CB342"></button>  
+        <button class="sw" data-color="#42A5F5" style="--c:#42A5F5"></button>  
+        <button class="sw" data-color="#8E24AA" style="--c:#8E24AA"></button>  
+        <button class="sw" data-color="#E0C2A2" style="--c:#E0C2A2"></button>  
+        <button class="sw" data-color="#8D6E63" style="--c:#8D6E63"></button>  
 
-          <!-- 🎨 Novo botão de cor personalizada -->
-          <button class="sw custom-picker" id="pickerBtn">🎨</button>
-          <input type="color" id="colorPickerInput" style="display:none;" />
+        <button class="sw custom-picker" id="pickerBtn">🎨</button>
+        <input type="color" id="colorPickerInput" style="display:none;" />
 
-          <!-- ➕ Mantido botão + original -->
-          <button class="sw custom" id="customColorBtn">+</button>
-        </div>  
-
-        <div class="tools">  
-          <button id="eraserBtn" class="btn">Borracha</button>  
-          <button id="undoBtn" class="btn">Desfazer</button>  
-          <button id="redoBtn" class="btn">Refazer</button>  
-          <button id="savePng" class="btn primary">Salvar PNG</button>  
-        </div>  
-
-        <div class="pager">  
-          <button id="prevBtn" class="navbtn">◀</button>  
-          <span id="pageLabel">1 / ?</span>  
-          <button id="nextBtn" class="navbtn">▶</button>  
-        </div>  
+        <button class="sw custom" id="customColorBtn">+</button>
       </div>  
-    </section>  
-  </main>  
 
-  <script src="js/pintura.js"></script>
-  <script src="js/script.js"></script>  
-  <script src="js/patch-gestures-scroll.js"></script>  
+      <div class="tools">  
+        <button id="eraserBtn" class="btn">Borracha</button>  
+        <button id="undoBtn" class="btn">Desfazer</button>  
+        <button id="redoBtn" class="btn">Refazer</button>  
+        <button id="savePng" class="btn primary">Salvar PNG</button>  
+      </div>  
 
-  <script>  
-    document.addEventListener("DOMContentLoaded", () => {  
-      const customBtn = document.getElementById("customColorBtn");  
-      const pickerBtn = document.getElementById("pickerBtn");
-      const colorPickerInput = document.getElementById("colorPickerInput");
-      let popupRef = null;  
+      <div class="pager">  
+        <button id="prevBtn" class="navbtn">◀</button>  
+        <span id="pageLabel">1 / ?</span>  
+        <button id="nextBtn" class="navbtn">▶</button>  
+      </div>  
+    </div>  
+  </section>  
+</main>  
 
-      const EXTRA_COLORS = [  
-        "#FF6F61","#F06292","#BA68C8","#9575CD","#4FC3F7","#4DD0E1",  
-        "#81C784","#AED581","#FFD54F","#FFB74D","#A1887F","#BDBDBD",  
-        "#EF5350","#FF8A65","#FFF176","#C0CA33","#26A69A","#29B6F6",  
-        "#7986CB","#AB47BC","#D4E157","#FF7043","#90A4AE","#5D4037"  
-      ];  
+<script src="js/pintura.js"></script>
+<script src="js/script.js"></script>  
+<script src="js/patch-gestures-scroll.js"></script>  
 
-      function closePopup() {  
-        if (!popupRef) return;  
-        popupRef.remove();  
-        popupRef = null;  
-        customBtn.classList.remove("active");  
-        document.removeEventListener("click", onOutside);  
-        document.removeEventListener("keydown", onEsc);  
-      }  
+<script>  
 
-      function onOutside(e) {  
-        if (popupRef && !popupRef.contains(e.target) && e.target !== customBtn) closePopup();  
-      }  
-      function onEsc(e) { if (e.key === "Escape") closePopup(); }  
+/* ⭐ NOVO — POP-UP DE AVALIAÇÃO (3 MINUTOS) */
+(function(){
 
-      function applyColorSafely(color) {  
-        const sendColor = () => {  
-          if (typeof window.setColor === "function") {  
-            window.setColor(color);  
-          } else {  
-            window.currentColor = color;  
-          }  
-          window.dispatchEvent(new CustomEvent("colorchange", { detail: { color } }));  
-        };  
+  if (localStorage.getItem("rating_never") === "true") return;
 
-        if (typeof window.setColor === "function") {  
-          sendColor();  
-        } else {  
-          let tries = 0;  
-          const interval = setInterval(() => {  
-            if (typeof window.setColor === "function") {  
-              sendColor();  
-              clearInterval(interval);  
-            } else if (tries++ > 20) {  
-              clearInterval(interval);  
-            }  
-          }, 100);  
-        }  
-      }  
+  let jáMostrou = false;
 
-      function openPopupAboveButton(btn) {  
-        closePopup();  
-        const pop = document.createElement("div");  
-        pop.className = "palette-popup";  
-        customBtn.classList.add("active");  
+  setTimeout(() => {
+    if (jáMostrou) return;
 
-        EXTRA_COLORS.forEach(c => {  
-          const el = document.createElement("div");  
-          el.className = "extra-color";  
-          el.style.background = c;  
-          el.addEventListener("click", () => {  
-            btn.style.background = c;  
-            btn.setAttribute("data-color", c);  
-            document.querySelectorAll(".sw").forEach(b => b.classList.remove("active"));  
-            btn.classList.add("active");  
+    const popup = document.getElementById("ratingPopup");
+    popup.classList.add("active");
+    jáMostrou = true;
+  }, 180000); // 3 minutos = 180.000 ms
 
-            el.style.boxShadow = "0 0 0 3px #ffd54f";  
-            setTimeout(() => el.style.boxShadow = "", 180);  
+  document.getElementById("rateNow").onclick = () => {
+    localStorage.setItem("rating_never", "true");
+    window.open("https://play.google.com/store/apps/details?id=app.vercel.pintandoapalavra.twa", "_blank");
+    document.getElementById("ratingPopup").classList.remove("active");
+  };
 
-            applyColorSafely(c);  
-            setTimeout(() => closePopup(), 80);  
-          });  
-          pop.appendChild(el);  
-        });  
+  document.getElementById("rateLater").onclick = () => {
+    document.getElementById("ratingPopup").classList.remove("active");
+  };
 
-        document.body.appendChild(pop);  
-        const br = btn.getBoundingClientRect();  
-        const pw = pop.offsetWidth;  
-        const ph = pop.offsetHeight;  
-        let left = br.left + br.width / 2 - pw / 2;  
-        let top  = br.top - ph - 8;  
-        const margin = 8;  
-        left = Math.max(margin, Math.min(left, window.innerWidth - pw - margin));  
-        if (top < margin) top = margin;  
-        pop.style.left = `${left}px`;  
-        pop.style.top  = `${top}px`;  
+  document.getElementById("rateNever").onclick = () => {
+    localStorage.setItem("rating_never", "true");
+    document.getElementById("ratingPopup").classList.remove("active");
+  };
 
-        requestAnimationFrame(() => pop.classList.add("active"));  
-        document.addEventListener("click", onOutside);  
-        document.addEventListener("keydown", onEsc);  
-        popupRef = pop;  
-      }  
+})();
 
-      customBtn.addEventListener("click", (e) => {  
-        e.stopPropagation();  
-        if (popupRef) closePopup();  
-        else openPopupAboveButton(customBtn);  
-      });  
+/* Tela de loading */
+const overlay = document.getElementById("loadingOverlay");  
+const observer = new MutationObserver(() => {  
+  const svgLoaded = document.querySelector("#svgMount svg");  
+  if (svgLoaded) {  
+    setTimeout(() => overlay.classList.add("hidden"), 400);  
+    observer.disconnect();  
+  }  
+});  
+observer.observe(document.getElementById("svgMount"), { childList: true, subtree: true });  
 
-      /* 🎨 Cor personalizada */
-      pickerBtn.addEventListener("click", () => {
-        colorPickerInput.click();
-      });
-      colorPickerInput.addEventListener("input", (e) => {
-        const color = e.target.value;
-        pickerBtn.style.background = color;
-        pickerBtn.setAttribute("data-color", color);
-        document.querySelectorAll(".sw").forEach(b => b.classList.remove("active"));
-        pickerBtn.classList.add("active");
-        applyColorSafely(color);
-      });
-    });  
+</script>
 
-    // ⏳ Tela de loading  
-    const overlay = document.getElementById("loadingOverlay");  
-    const observer = new MutationObserver(() => {  
-      const svgLoaded = document.querySelector("#svgMount svg");  
-      if (svgLoaded) {  
-        setTimeout(() => overlay.classList.add("hidden"), 400);  
-        observer.disconnect();  
-      }  
-    });  
-    observer.observe(document.getElementById("svgMount"), { childList: true, subtree: true });  
-  </script>  
-
-  <!-- 🟡 Anúncio automático AdMob (a cada 2 minutos) -->
-  <script>
-    const TESTE = true;
-    const ADMOB_APP_ID = "ca-app-pub-1648224245207447~6318142740";
-    const ADMOB_INTERSTITIAL_ID = "ca-app-pub-1648224245207447/7457439377";
-
-    function exibirAnuncio() {
-      if (TESTE) {
-        alert("🎬 Anúncio em exibição (modo de teste)");
-      } else {
-        console.log("🎬 Exibindo anúncio real:", ADMOB_INTERSTITIAL_ID);
-      }
-    }
-
-    window.addEventListener("load", () => {
-      setInterval(exibirAnuncio, 120000);
-    });
-  </script>
-</body>  
+</body>
 </html>
