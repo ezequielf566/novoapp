@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="pt-BR">  
+<html lang="es">  
 <head>  
   <meta charset="utf-8" />  
   <meta name="viewport" content="width=device-width, initial-scale=1" />  
-  <title>Pintando a Palavra — Colorir</title>  
+  <title>Coloreando la Palabra — Colorear</title>  
   <link rel="stylesheet" href="css/style.css" />  
 
   <style>  
-    /* 🌀 Tela de carregamento */  
+    /* 🌀 Pantalla de carga */  
     #loadingOverlay {  
       position: fixed; inset: 0;  
       background: #fff9e6;  
@@ -28,7 +28,7 @@
       font-size: 1.1rem; color: #444; text-align: center;  
     }  
 
-    /* ⭐ NOVO — POP-UP AVALIAÇÃO */
+    /* ⭐ POP-UP DE VALORACIÓN */
     #ratingPopup {
       position: fixed;
       inset: 0;
@@ -71,6 +71,7 @@
       color: #555;
       line-height: 1.4;
     }
+
     .rating-buttons {
       display: flex;
       flex-direction: column;
@@ -88,7 +89,7 @@
     .rating-later { background: #e0e0e0; }
     .rating-never { background: #ff8a80; color: #fff; }
 
-    /* 🎨 Popup de tons e extras */
+    /* 🎨 Popup de tonos extra */
     .palette-popup {  
       position: fixed;  
       background: #fff;  
@@ -119,72 +120,34 @@
       box-shadow: 0 2px 4px rgba(0,0,0,.25);  
       transition: transform .12s, box-shadow .2s;  
     }  
-    .extra-color:hover { box-shadow: 0 0 6px 2px rgba(255,213,79,0.6); }  
-    .extra-color:active {  
-      transform: scale(.9);  
-      box-shadow: 0 0 0 3px #ffd54f;  
-    }  
-
-    .sw.custom {  
-      width: 36px; height: 36px;  
-      border-radius: 10px !important;  
-      background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb);  
-      background-size: 300% 300%;  
-      animation: hueShift 8s ease infinite;  
-      display: flex; align-items: center; justify-content: center;  
-      font-weight: bold; font-size: 1.4rem;  
-      color: #fff; border: 2px solid #fff;  
-      box-shadow: 0 2px 6px rgba(0,0,0,.2);  
-      transition: box-shadow .3s ease;  
-    }  
-    .sw.custom.active { animation: glowPulse 1.4s ease-in-out infinite; }  
-      
-    /* 🎨 Novo botão de cor personalizada */
-    .sw.custom-picker {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #FFD54F, #FFB300);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      color: #fff;
-      border: 2px solid #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,.2);
-      cursor: pointer;
-      transition: transform .15s, box-shadow .25s;
-    }
   </style>  
 </head>  
 
 <body>  
 
-<!-- ⭐ NOVO — POP-UP AVALIAÇÃO -->
+<!-- ⭐ POP-UP DE VALORACIÓN -->
 <div id="ratingPopup">
   <div class="rating-box">
 
-    <h2>Gostaria de avaliar?</h2>
+    <h2>¿Te gustaría valorar?</h2>
 
-    <div class="rating-stars">
-      ⭐⭐⭐⭐⭐
-    </div>
+    <div class="rating-stars">⭐⭐⭐⭐⭐</div>
 
-    <p>Seu apoio ajuda o Pintando a Palavra a alcançar mais famílias. 💛</p>
+    <p>Tu apoyo ayuda a Coloreando la Palabra a llegar a más familias. 💛</p>
 
     <div class="rating-buttons">
-      <button id="rateNow" class="rating-btn rating-now">Avaliar agora</button>
-      <button id="rateLater" class="rating-btn rating-later">Depois</button>
+      <button id="rateNow" class="rating-btn rating-now">Valorar ahora</button>
+      <button id="rateLater" class="rating-btn rating-later">Después</button>
       <button id="rateNever" class="rating-btn rating-never">Nunca</button>
     </div>
 
   </div>
 </div>
 
-<!-- RESTANTE DO APP -->
+<!-- 🌀 Pantalla de carga -->
 <div id="loadingOverlay">  
   <div class="spinner"></div>  
-  <div class="loading-text">🎨 Carregando artes...</div>  
+  <div class="loading-text">🎨 Cargando dibujos...</div>  
 </div>  
 
 <header class="topbar">  
@@ -208,6 +171,7 @@
 
   <section class="controls">  
     <div class="palette">  
+
       <div class="swatches" id="swatches">  
         <button class="sw" data-color="#E53935" style="--c:#E53935"></button>  
         <button class="sw" data-color="#FB8C00" style="--c:#FB8C00"></button>  
@@ -225,10 +189,10 @@
       </div>  
 
       <div class="tools">  
-        <button id="eraserBtn" class="btn">Borracha</button>  
-        <button id="undoBtn" class="btn">Desfazer</button>  
-        <button id="redoBtn" class="btn">Refazer</button>  
-        <button id="savePng" class="btn primary">Salvar PNG</button>  
+        <button id="eraserBtn" class="btn">Borrar</button>  
+        <button id="undoBtn" class="btn">Deshacer</button>  
+        <button id="redoBtn" class="btn">Rehacer</button>  
+        <button id="savePng" class="btn primary">Guardar</button>  
       </div>  
 
       <div class="pager">  
@@ -236,6 +200,7 @@
         <span id="pageLabel">1 / ?</span>  
         <button id="nextBtn" class="navbtn">▶</button>  
       </div>  
+
     </div>  
   </section>  
 </main>  
@@ -246,18 +211,17 @@
 
 <script>  
 
-/* ⭐ NOVO — POP-UP DE AVALIAÇÃO (3 MINUTOS) */
+/* ⭐ Pop-up de valoración tras 3 minutos */
 (function(){
 
   if (localStorage.getItem("rating_never") === "true") return;
 
-  let jáMostrou = false;
+  let mostrado = false;
 
   setTimeout(() => {
-    if (jáMostrou) return;
-
+    if (mostrado) return;
     document.getElementById("ratingPopup").classList.add("active");
-    jáMostrou = true;
+    mostrado = true;
   }, 180000);
 
   document.getElementById("rateNow").onclick = () => {
@@ -277,7 +241,7 @@
 
 })();
 
-/* Tela de loading */
+/* Pantalla de carga */
 const overlay = document.getElementById("loadingOverlay");  
 const observer = new MutationObserver(() => {  
   const svgLoaded = document.querySelector("#svgMount svg");  
