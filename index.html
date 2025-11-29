@@ -2,7 +2,7 @@
 <html lang="pt-BR">  
 <head>  
   <meta charset="utf-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />  
   <title>Pintando a Palavra — Colorir</title>  
   <link rel="stylesheet" href="css/style.css" />  
 
@@ -111,7 +111,10 @@
       transform: scale(.9);
       box-shadow: 0 0 0 3px #ffd54f;
     }
-  </style>  
+  
+    /* 🔍 Zoom apenas dentro da área de desenho */
+    #svgMount { touch-action: none; }
+</style>  
 </head>  
 
 <body>  
@@ -325,5 +328,119 @@
       setInterval(exibirAnuncio, 120000);
     });
   </script>
+
+  <script>
+    // 🎯 Zoom com dois dedos somente dentro do SVG (sem quebrar a pintura)
+    (function() {
+      const svgMount = document.getElementById("svgMount");
+      if (!svgMount) return;
+
+      const state = {
+        svg: null,
+        scale: 1,
+        minScale: 1,
+        maxScale: 3,
+        pointers: new Map(),
+        baseDistance: 0,
+        startScale: 1
+      };
+
+      function setSvgTarget(svg) {
+        if (!svg || svg === state.svg) return;
+        state.svg = svg;
+        state.scale = 1;
+        state.baseDistance = 0;
+        state.pointers.clear();
+        svg.style.transformOrigin = "50% 50%";
+        svg.style.transform = "scale(1)";
+      }
+
+      function distance(p1, p2) {
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+
+      function applyScale() {
+        if (!state.svg) return;
+        state.svg.style.transform = "scale(" + state.scale + ")";
+      }
+
+      // Garante que o navegador não tente rolar/zoomar a página dentro do canvas
+      svgMount.style.touchAction = "none";
+
+      // Captura toques antes da lógica de pintura
+      svgMount.addEventListener("pointerdown", (ev) => {
+        if (ev.pointerType !== "touch") return;
+        if (!state.svg) return;
+
+        state.pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+
+        // Quando o segundo dedo encosta, começamos a calcular o zoom
+        if (state.pointers.size === 2) {
+          const pts = Array.from(state.pointers.values());
+          state.baseDistance = distance(pts[0], pts[1]);
+          state.startScale = state.scale;
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+      }, { passive: false, capture: true });
+
+      svgMount.addEventListener("pointermove", (ev) => {
+        if (ev.pointerType !== "touch") return;
+        if (!state.svg) return;
+        if (!state.pointers.has(ev.pointerId)) return;
+
+        state.pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+
+        if (state.pointers.size >= 2 && state.baseDistance > 0) {
+          const pts = Array.from(state.pointers.values());
+          const dist = distance(pts[0], pts[1]);
+          if (dist <= 0) return;
+
+          let factor = dist / state.baseDistance;
+          let newScale = state.startScale * factor;
+
+          if (newScale < state.minScale) newScale = state.minScale;
+          if (newScale > state.maxScale) newScale = state.maxScale;
+
+          state.scale = newScale;
+          applyScale();
+
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+      }, { passive: false, capture: true });
+
+      function clearPointer(ev) {
+        if (state.pointers.has(ev.pointerId)) {
+          state.pointers.delete(ev.pointerId);
+        }
+        if (state.pointers.size < 2) {
+          state.baseDistance = 0;
+        }
+      }
+
+      ["pointerup", "pointercancel", "pointerleave", "pointerout"].forEach(type => {
+        svgMount.addEventListener(type, clearPointer, { capture: true });
+      });
+
+      // Observa quando o SVG troca (mudança de página)
+      const obs = new MutationObserver(() => {
+        const svg = svgMount.querySelector("svg");
+        if (svg) {
+          setSvgTarget(svg);
+        }
+      });
+      obs.observe(svgMount, { childList: true, subtree: true });
+
+      // Se já existir um SVG montado na primeira carga
+      const initialSvg = svgMount.querySelector("svg");
+      if (initialSvg) {
+        setSvgTarget(initialSvg);
+      }
+    })();
+  </script>
+
 </body>  
 </html>
