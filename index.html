@@ -2,7 +2,7 @@
 <html lang="pt-BR">  
 <head>  
   <meta charset="utf-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  
   <title>Pintando a Palavra — Colorir</title>  
   <link rel="stylesheet" href="css/style.css" />  
 
@@ -111,10 +111,7 @@
       transform: scale(.9);
       box-shadow: 0 0 0 3px #ffd54f;
     }
-  
-    /* 🔍 Zoom apenas dentro da área de desenho */
-    #svgMount { touch-action: none; }
-</style>  
+  </style>  
 </head>  
 
 <body>  
@@ -310,6 +307,160 @@
     observer.observe(document.getElementById("svgMount"), { childList: true, subtree: true });  
   </script>  
 
+  <!-- 🟡 Zoom & Pan apenas no SVG, com reset automático ao voltar para ~1x -->
+  <script>
+    (function () {
+      const mount = document.getElementById("svgMount");
+      if (!mount) return;
+
+      let currentSvg = null;
+
+      const state = {
+        scale: 1,
+        minScale: 1,
+        maxScale: 3,
+        tx: 0,
+        ty: 0
+      };
+
+      let pinch = null;
+
+      function reset() {
+        state.scale = 1;
+        state.tx = 0;
+        state.ty = 0;
+        if (currentSvg) {
+          currentSvg.style.transform = "";
+        }
+      }
+
+      function applyTransform() {
+        if (!currentSvg) return;
+
+        // Se estiver praticamente em 1x, tira o transform e volta pro centro
+        if (Math.abs(state.scale - 1) < 0.01) {
+          reset();
+          return;
+        }
+
+        currentSvg.style.transformOrigin = "center center";
+        currentSvg.style.transform = `translate(${state.tx}px, ${state.ty}px) scale(${state.scale})`;
+      }
+
+      function clampScale(s) {
+        return Math.min(state.maxScale, Math.max(state.minScale, s));
+      }
+
+      function getTouchInfo(ev) {
+        if (ev.touches.length < 2) return null;
+        const [t1, t2] = ev.touches;
+        const dx = t2.clientX - t1.clientX;
+        const dy = t2.clientY - t1.clientY;
+        return {
+          dist: Math.hypot(dx, dy),
+          cx: (t1.clientX + t2.clientX) / 2,
+          cy: (t1.clientY + t2.clientY) / 2
+        };
+      }
+
+      function setupSvg(svg) {
+        currentSvg = svg;
+        reset();
+
+        // Bloqueia gesto padrão só dentro do SVG
+        svg.style.touchAction = "none";
+
+        // Zoom com scroll (desktop)
+        svg.addEventListener(
+          "wheel",
+          (ev) => {
+            ev.preventDefault();
+            const delta = ev.deltaY;
+            let newScale = state.scale + (delta > 0 ? -0.15 : 0.15);
+            newScale = clampScale(newScale);
+            state.scale = newScale;
+
+            if (state.scale <= 1.02) {
+              reset();
+              return;
+            }
+            applyTransform();
+          },
+          { passive: false }
+        );
+
+        // Pinch + pan (mobile)
+        svg.addEventListener(
+          "touchstart",
+          (ev) => {
+            if (ev.touches.length === 2) {
+              const info = getTouchInfo(ev);
+              if (!info) return;
+              pinch = {
+                startScale: state.scale,
+                startDist: info.dist,
+                startCx: info.cx,
+                startCy: info.cy,
+                startTx: state.tx,
+                startTy: state.ty
+              };
+            }
+          },
+          { passive: true }
+        );
+
+        svg.addEventListener(
+          "touchmove",
+          (ev) => {
+            if (!pinch) return;
+            const info = getTouchInfo(ev);
+            if (!info) return;
+            ev.preventDefault();
+
+            let newScale =
+              pinch.startScale * (info.dist / pinch.startDist);
+            newScale = clampScale(newScale);
+            state.scale = newScale;
+
+            // Pan acompanhando o centro dos dedos
+            state.tx = pinch.startTx + (info.cx - pinch.startCx);
+            state.ty = pinch.startTy + (info.cy - pinch.startCy);
+
+            if (state.scale <= 1.02) {
+              reset();
+            } else {
+              applyTransform();
+            }
+          },
+          { passive: false }
+        );
+
+        function endPinch(ev) {
+          if (ev.touches && ev.touches.length >= 2) return;
+          pinch = null;
+          if (state.scale <= 1.02) {
+            reset();
+          } else {
+            applyTransform();
+          }
+        }
+
+        svg.addEventListener("touchend", endPinch);
+        svg.addEventListener("touchcancel", endPinch);
+      }
+
+      // Observa quando um SVG é carregado/substituído dentro do mount
+      const obs = new MutationObserver(() => {
+        const svg = mount.querySelector("svg");
+        if (svg && svg !== currentSvg) {
+          setupSvg(svg);
+        }
+      });
+
+      obs.observe(mount, { childList: true, subtree: true });
+    })();
+  </script>
+
   <!-- 🟡 Anúncio automático AdMob (a cada 2 minutos) -->
   <script>
     const TESTE = true;
@@ -328,237 +479,5 @@
       setInterval(exibirAnuncio, 120000);
     });
   </script>
-
-  <script>
-    
-  // 🎯 Zoom por pinça + pan apenas dentro da área do desenho
-  (function () {
-    const svgMount = document.getElementById("svgMount");
-    if (!svgMount) return;
-
-    let zoomState = {
-      svgTarget: null,
-      pointers: new Map(),
-      baseDistance: 0,
-      baseScale: 1,
-      currentScale: 1,
-      minScale: 1,
-      maxScale: 3,
-      translateX: 0,
-      translateY: 0,
-      isZooming: false,
-      isPanning: false,
-      panStartX: 0,
-      panStartY: 0,
-      panOrigX: 0,
-      panOrigY: 0
-    };
-
-    function setSvgTarget(svgElement) {
-      zoomState.svgTarget = svgElement;
-      zoomState.pointers.clear();
-      zoomState.baseDistance = 0;
-      zoomState.baseScale = 1;
-      zoomState.currentScale = 1;
-      zoomState.translateX = 0;
-      zoomState.translateY = 0;
-      zoomState.isZooming = false;
-      zoomState.isPanning = false;
-
-      svgElement.style.transformOrigin = "center center";
-      svgElement.style.transform = "translate(0px, 0px) scale(1)";
-    }
-
-    function clamp(value, min, max) {
-      return Math.min(max, Math.max(min, value));
-    }
-
-    function distance(p1, p2) {
-      const dx = p2.x - p1.x;
-      const dy = p2.y - p1.y;
-      return Math.hypot(dx, dy);
-    }
-
-    function applyTransform() {
-      if (!zoomState.svgTarget) return;
-      const s = zoomState.currentScale;
-      const tx = zoomState.translateX;
-      const ty = zoomState.translateY;
-      zoomState.svgTarget.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
-    }
-
-    function applyScaleFromPinch() {
-      if (zoomState.pointers.size < 2 || !zoomState.svgTarget) return;
-      const pts = Array.from(zoomState.pointers.values());
-      const p1 = pts[0];
-      const p2 = pts[1];
-      const dist = distance(p1, p2);
-
-      if (!zoomState.baseDistance || zoomState.baseDistance <= 0) {
-        zoomState.baseDistance = dist;
-        zoomState.baseScale = zoomState.currentScale;
-      }
-
-      const rawScale = (dist / zoomState.baseDistance) * zoomState.baseScale;
-      zoomState.currentScale = clamp(
-        rawScale,
-        zoomState.minScale,
-        zoomState.maxScale
-      );
-      applyTransform();
-    }
-
-    svgMount.addEventListener("pointerdown", (ev) => {
-      if (ev.pointerType !== "touch") return;
-
-      if (!zoomState.svgTarget) {
-        const currentSvg = svgMount.querySelector("svg");
-        if (currentSvg) {
-          setSvgTarget(currentSvg);
-        } else {
-          return;
-        }
-      }
-
-      svgMount.setPointerCapture(ev.pointerId);
-      zoomState.pointers.set(ev.pointerId, {
-        id: ev.pointerId,
-        x: ev.clientX,
-        y: ev.clientY
-      });
-
-      if (zoomState.pointers.size === 1) {
-        // candidato a pan
-        zoomState.isPanning = false;
-        zoomState.panStartX = ev.clientX;
-        zoomState.panStartY = ev.clientY;
-        zoomState.panOrigX = zoomState.translateX;
-        zoomState.panOrigY = zoomState.translateY;
-      } else if (zoomState.pointers.size === 2) {
-        // inicia pinch
-        const pts = Array.from(zoomState.pointers.values());
-        zoomState.baseDistance = distance(pts[0], pts[1]);
-        zoomState.baseScale = zoomState.currentScale;
-        zoomState.isZooming = true;
-        zoomState.isPanning = false;
-      }
-    });
-
-    svgMount.addEventListener("pointermove", (ev) => {
-      if (!zoomState.pointers.has(ev.pointerId)) return;
-
-      const point = zoomState.pointers.get(ev.pointerId);
-      point.x = ev.clientX;
-      point.y = ev.clientY;
-
-      // pinch com dois dedos
-      if (zoomState.pointers.size >= 2 && zoomState.isZooming) {
-        ev.preventDefault();
-        applyScaleFromPinch();
-        return;
-      }
-
-      // pan com um dedo (somente quando já está com zoom)
-      if (zoomState.currentScale <= 1) return;
-
-      const dx = ev.clientX - zoomState.panStartX;
-      const dy = ev.clientY - zoomState.panStartY;
-      const threshold = 8;
-
-      if (!zoomState.isPanning) {
-        if (Math.hypot(dx, dy) > threshold) {
-          zoomState.isPanning = true;
-        } else {
-          return;
-        }
-      }
-
-      ev.preventDefault();
-
-      let newX = zoomState.panOrigX + dx;
-      let newY = zoomState.panOrigY + dy;
-
-      // limitar pan para não sumir com o desenho
-      if (zoomState.svgTarget) {
-        const svgRect = zoomState.svgTarget.getBoundingClientRect();
-        const extraX = (zoomState.currentScale - 1) * svgRect.width / 2;
-        const extraY = (zoomState.currentScale - 1) * svgRect.height / 2;
-
-        const minX = -extraX;
-        const maxX = extraX;
-        const minY = -extraY;
-        const maxY = extraY;
-
-        newX = clamp(newX, minX, maxX);
-        newY = clamp(newY, minY, maxY);
-      }
-
-      zoomState.translateX = newX;
-      zoomState.translateY = newY;
-      applyTransform();
-    });
-
-    function clearPointer(ev) {
-      if (zoomState.pointers.has(ev.pointerId)) {
-        zoomState.pointers.delete(ev.pointerId);
-      }
-
-      if (zoomState.pointers.size < 2) {
-        zoomState.isZooming = false;
-        zoomState.baseDistance = 0;
-        zoomState.baseScale = zoomState.currentScale;
-      }
-
-      if (zoomState.pointers.size === 0) {
-        zoomState.isPanning = false;
-      }
-
-      try {
-        svgMount.releasePointerCapture(ev.pointerId);
-      } catch (e) {}
-    }
-
-    svgMount.addEventListener("pointerup", clearPointer);
-    svgMount.addEventListener("pointercancel", clearPointer);
-    svgMount.addEventListener("pointerleave", clearPointer);
-
-    // observa quando o SVG é trocado dinamicamente
-    (function () {
-      const mount = document.getElementById("svgMount");
-      if (!mount) return;
-
-      const obs = new MutationObserver(() => {
-        const svg = mount.querySelector("svg");
-        if (svg && svg !== zoomState.svgTarget) {
-          setSvgTarget(svg);
-        }
-      });
-
-      obs.observe(mount, { childList: true, subtree: true });
-
-      const initialSvg = mount.querySelector("svg");
-      if (initialSvg) {
-        setSvgTarget(initialSvg);
-      }
-    })();
-
-    // desabilita zoom/scroll padrão do navegador dentro da área do desenho
-    svgMount.style.touchAction = "none";
-  })();
-;
-  </script>
-
-
-<script>
-window.addEventListener("svgZoomChange", e=>{
-  if(e.detail.scale===1){
-    const svg=document.querySelector("#svgMount svg");
-    if(svg){
-      svg.style.transform="scale(1) translate(0,0)";
-    }
-  }
-});
-</script>
-
 </body>  
 </html>
