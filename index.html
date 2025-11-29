@@ -111,6 +111,17 @@
       transform: scale(.9);
       box-shadow: 0 0 0 3px #ffd54f;
     }
+
+    /* 🔒 Opção C — rolagem contida na área de pintura (sem mexer na lógica de pintura) */
+    html, body {
+      overscroll-behavior-y: none;
+    }
+    .stage {
+      overscroll-behavior: contain;
+    }
+    .svgMount {
+      touch-action: pan-x pan-y;
+    }
   </style>  
 </head>  
 
