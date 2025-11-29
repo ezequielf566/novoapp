@@ -548,5 +548,17 @@
 ;
   </script>
 
+
+<script>
+window.addEventListener("svgZoomChange", e=>{
+  if(e.detail.scale===1){
+    const svg=document.querySelector("#svgMount svg");
+    if(svg){
+      svg.style.transform="scale(1) translate(0,0)";
+    }
+  }
+});
+</script>
+
 </body>  
 </html>
