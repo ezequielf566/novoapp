@@ -1,4 +1,4 @@
-<!-- 🔸 Pintando a Palavra — Menu FINAL Premium Ajustado -->
+<!-- 🔸 Pintando a Palavra — Menu FINAL Premium COMPLETO -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -53,7 +53,6 @@
 
     .notif-icon:hover svg { transform:scale(1.1); }
 
-    /* DIAMANTE GIRANDO */
     .diamond {
       margin-left:10px;
       font-size:1.5rem;
@@ -79,17 +78,16 @@
       align-items:center;
       gap:6px;
     }
-    header .btn:hover { transform:scale(1.05); background:#fff7d1; }
 
-    /* MAIN SEM SAUDAÇÃO */
+    /* MAIN */
     main {
       flex:1;
       display:flex;
       flex-direction:column;
       align-items:center;
-      padding:1.8rem 1rem 3rem; /* ajustado */
       text-align:center;
-      gap:1.8rem; /* Espaço equilibrado entre seções */
+      padding:2.2rem 1rem 2.5rem;
+      gap:2rem; 
     }
 
     /* MENU */
@@ -99,7 +97,6 @@
       gap:1.2rem;
       width:100%;
       max-width:340px;
-      margin-top:.5rem; /* sobe levemente */
     }
 
     .menu button {
@@ -119,7 +116,6 @@
       display:flex;
       justify-content:center;
       gap:1rem;
-      margin-top:.8rem;
     }
     .socials button {
       background:#fffbe6;
@@ -134,7 +130,7 @@
     }
     .socials button:hover { background:#fff2b3; transform:scale(1.05); }
 
-    /* MODAIS (mesmos estilos anteriores) */
+    /* MODAIS */
     .modal-backdrop {
       position:fixed;
       inset:0;
@@ -159,12 +155,11 @@
       text-align:center;
     }
 
-    /* MODAL AVALIAÇÃO PREMIUM */
+    /* MODAL AVALIAÇÃO */
     #ratingModal .modal-box {
       background:linear-gradient(180deg,#fffef5 0%,#fff4cc 100%);
       box-shadow:0 6px 20px rgba(0,0,0,0.2);
     }
-
     #ratingModal h2 { font-size:1.4rem; margin-bottom:.5rem; }
     #ratingModal .stars { font-size:2.2rem; text-shadow:0 0 6px rgba(255,200,50,0.7); }
     #ratingModal p { line-height:1.4; }
@@ -186,6 +181,8 @@
 <body>
 
   <div id="menuContainer">
+
+    <!-- HEADER -->
     <header>
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="notif-icon" onclick="window.openStoryModal()">
@@ -195,23 +192,21 @@
             <path d="M21 8v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path>
           </svg>
         </div>
+
         <div class="diamond" id="diamondBtn" title="Apoiar Projeto">💎</div>
       </div>
 
       <button id="logoutBtn" class="btn">🚪 Sair</button>
     </header>
 
+    <!-- MAIN -->
     <main>
-
-      <!-- ❗ SAUDAÇÃO REMOVIDA AQUI -->
 
       <div class="menu">
         <button onclick="abrirTela('app/index.html','app')">📖 Histórias</button>
         <button onclick="abrirTela('atividades/index.html','atividades')">🎨 Atividades</button>
         <button onclick="abrirTela('pdfcompleto/index.html','pdfcompleto')">📚 PDF Completo</button>
       </div>
-
-      <h2>Siga-nos!</h2>
 
       <div class="socials">
         <button onclick="window.open('https://www.instagram.com/pintandoapalavra_', '_blank')">📸 Instagram</button>
@@ -221,13 +216,56 @@
     </main>
   </div>
 
+  <!-- IFRAME -->
   <iframe id="conteudo" style="display:none;width:100%;height:100vh;border:none;"></iframe>
 
-  <!-- Mesmo JS e Modais do arquivo anterior seguem abaixo (não alterei nada além do layout) -->
-  <!-- Modal Premium, Modal História, Modal Avaliação e Scripts permanecem iguais -->
+  <!-- MODAL APOIO -->
+  <div id="supportModal" class="modal-backdrop">
+    <div class="modal-box">
+      <h2>Seja Premium</h2>
+      <p>Ajude o Pintando a Palavra a alcançar mais famílias. 💛</p>
+      <div style="display:flex; gap:.6rem; justify-content:center;">
+        <button class="btn" onclick="window.closeSupportModal()">Agora não</button>
+        <button class="btn" id="btnApoiar">💳 Apoiar agora</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- MODAL HISTÓRIA -->
+  <div id="storyModal" class="modal-backdrop">
+    <div class="modal-box" style="text-align:left;">
+      <h2>Atualização especial!</h2>
+      <p>
+        • Uso off-line disponível<br>
+        • Design reformulado<br>
+        • Paleta atualizada<br>
+        • Novas histórias adicionadas!
+      </p>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <button class="btn" onclick="window.closeStoryModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL AVALIAÇÃO -->
+  <div id="ratingModal" class="modal-backdrop">
+    <div class="modal-box">
+      <h2>Gostaria de avaliar?</h2>
+      <div class="stars">⭐️⭐️⭐️⭐️⭐️</div>
+      <p>Seu apoio ajuda o Pintando a Palavra a alcançar mais famílias. 💛</p>
+
+      <div style="display:flex; gap:.6rem; justify-content:center; margin-top:1.5rem;">
+        <button class="btn" id="btnRatingNow">Avaliar agora</button>
+        <button class="btn" id="btnRatingLater">Depois</button>
+        <button class="btn" id="btnRatingNever">Nunca</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO -->
   <script src="audio/audioController.js" defer></script>
 
+  <!-- SCRIPT MENU -->
   <script>
     const diamondBtn=document.getElementById("diamondBtn");
     const supportModal=document.getElementById("supportModal");
@@ -252,9 +290,8 @@
     });
 
     function abrirTela(src,tela){
-      const menu=document.getElementById("menuContainer");
+      document.getElementById("menuContainer").style.display="none";
       const iframe=document.getElementById("conteudo");
-      menu.style.display="none";
       iframe.style.display="block";
       iframe.src=src;
       history.pushState({tela},"","#"+tela);
@@ -262,32 +299,30 @@
     window.abrirTela=abrirTela;
 
     window.onpopstate=function(){
-      const iframe=document.getElementById("conteudo");
-      const menu=document.getElementById("menuContainer");
-      iframe.style.display="none";
-      menu.style.display="block";
+      document.getElementById("conteudo").style.display="none";
+      document.getElementById("menuContainer").style.display="block";
       history.replaceState({}, "", location.pathname);
     };
   </script>
 
-  <!-- ⭐ Script do Modal de Avaliação -->
+  <!-- SCRIPT AVALIAÇÃO -->
   <script>
     const ratingModal=document.getElementById("ratingModal");
     const btnRatingNow=document.getElementById("btnRatingNow");
     const btnRatingLater=document.getElementById("btnRatingLater");
     const btnRatingNever=document.getElementById("btnRatingNever");
 
-    function openRatingModal(){ratingModal.classList.add("open");}
-    function closeRatingModal(){ratingModal.classList.remove("open");}
+    function openRatingModal(){ ratingModal.classList.add("open"); }
+    function closeRatingModal(){ ratingModal.classList.remove("open"); }
 
     function verificarModalAvaliacao(){
       const status=localStorage.getItem("pp_rating_status");
       const lastTime=localStorage.getItem("pp_rating_time");
 
-      if(status==="never"||status==="done")return;
+      if(status==="never" || status==="done") return;
 
-      if(status==="later"&&lastTime){
-        if(Date.now()-parseInt(lastTime,10)<24*60*60*1000)return;
+      if(status==="later" && lastTime){
+        if(Date.now() - parseInt(lastTime,10) < 24*60*60*1000) return;
       }
 
       openRatingModal();
