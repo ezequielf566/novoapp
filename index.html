@@ -1,4 +1,4 @@
-<!-- 🔸 Pintando a Palavra — Menu PREMIUM FINAL (4 Menus + Centralização Visual + Modal Bíblia Kids) -->
+<!-- 🔸 Pintando a Palavra — Menu FINAL Premium -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +7,6 @@
   <title>Pintando a Palavra — Menu</title>
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#ffffff" />
-
   <style>
     body {
       margin: 0;
@@ -23,9 +22,8 @@
 
     /* HEADER */
     header {
-      height: clamp(70px, 10vh, 90px);
       background: linear-gradient(90deg,#ffd54f,#ffea80);
-      padding: 0 1.2rem;
+      padding: .8rem 1.2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -38,197 +36,224 @@
     }
 
     .notif-icon, .diamond {
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:transform .2s ease;
     }
 
     .notif-icon svg {
-      width: 28px;
-      height: 28px;
-      stroke: #444;
-      filter: drop-shadow(0 0 4px rgba(255,213,79,0.6));
+      width:28px;
+      height:28px;
+      stroke:#444;
+      filter:drop-shadow(0 0 4px rgba(255,213,79,0.6));
     }
 
+    .notif-icon:hover svg { transform:scale(1.1); }
+
+    /* DIAMANTE GIRANDO */
     .diamond {
-      margin-left: 10px;
-      font-size: 1.5rem;
-      animation: spinDiamond 3.5s linear infinite;
-      transform-style: preserve-3d;
+      margin-left:10px;
+      font-size:1.5rem;
+      animation:spinDiamond 3.5s linear infinite;
+      transform-style:preserve-3d;
     }
-
     @keyframes spinDiamond {
-      0% { transform: rotateY(0deg); }
-      50% { transform: rotateY(180deg); }
-      100% { transform: rotateY(360deg); }
+      0%{transform:rotateY(0deg);}
+      50%{transform:rotateY(180deg);}
+      100%{transform:rotateY(360deg);}
     }
 
     header .btn {
-      background: #fff;
-      border: none;
-      padding: .6rem 1.1rem;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      background:#fff;
+      border:none;
+      padding:.6rem 1.1rem;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      transition:all .25s ease;
+      display:flex;
+      align-items:center;
+      gap:6px;
     }
+    header .btn:hover { transform:scale(1.05); background:#fff7d1; }
 
-    /* MAIN — CENTRALIZAÇÃO VISUAL (NÃO MATEMÁTICA) */
+    /* MAIN */
     main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 2.4rem;
-
-      /* 🎯 O AJUSTE QUE RESOLVE */
-      justify-content: flex-start;
-      padding-top: 6vh;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:2.5rem 1rem 3rem;
+      text-align:center;
     }
 
-    /* MENU */
+    .saudacao {
+      font-size:1.4rem;
+      color:#222;
+      font-weight:600;
+      margin-bottom:2rem;
+      background:rgba(255,255,255,0.7);
+      padding:1.2rem 1.8rem;
+      border-radius:18px;
+      box-shadow:0 4px 8px rgba(0,0,0,0.1);
+      backdrop-filter:blur(6px);
+      line-height:1.5;
+      display:inline-block;
+    }
+
     .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      width: 100%;
-      max-width: 340px;
+      display:flex;
+      flex-direction:column;
+      gap:1.2rem;
+      width:100%;
+      max-width:340px;
     }
 
     .menu button {
-      background: #ffd54f;
-      border: none;
-      padding: 1rem;
-      border-radius: 16px;
-      font-size: 1.15rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4),0 4px 10px rgba(0,0,0,0.15);
-      transition: all .25s ease;
+      background:#ffd54f;
+      border:none;
+      padding:1rem;
+      border-radius:16px;
+      font-size:1.15rem;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 10px rgba(0,0,0,0.15);
+      transition:all .25s ease;
     }
-    .menu button:hover { transform: scale(1.03); background: #ffe066; }
+    .menu button:hover { transform:scale(1.03); background:#ffe066; }
 
-    /* REDES SOCIAIS */
     .socials {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
+      display:flex;
+      justify-content:center;
+      gap:1rem;
+      margin-top:1.5rem;
     }
-
     .socials button {
-      background: #fffbe6;
-      border: 2px solid #ffe066;
-      border-radius: 14px;
-      padding: .7rem 1.3rem;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-      transition: all .25s ease;
+      background:#fffbe6;
+      border:2px solid #ffe066;
+      border-radius:14px;
+      padding:.7rem 1.3rem;
+      font-size:1rem;
+      font-weight:600;
+      cursor:pointer;
+      transition:all .25s ease;
+      box-shadow:0 3px 6px rgba(0,0,0,0.1);
     }
-
-    .socials button:hover { background:#fff2b3; transform: scale(1.05); }
+    .socials button:hover { background:#fff2b3; transform:scale(1.05); }
 
     /* MODAIS BASE */
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(255,240,180,0.45);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1200;
-      padding: 16px;
-      opacity: 0;
-      transition: opacity .25s ease;
+      position:fixed;
+      inset:0;
+      background:rgba(255,240,180,0.45);
+      backdrop-filter:blur(4px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1200;
+      padding:16px;
+      opacity:0;
+      transition:opacity .3s ease;
     }
-
-    .modal-backdrop.open { display: flex; opacity: 1; }
+    .modal-backdrop.open { display:flex; opacity:1; }
 
     .modal-box {
-      background: linear-gradient(180deg,#FFF8DC 0%,#FFEBA3 100%);
-      border-radius: 22px;
-      padding: 28px 24px 32px;
-      width: min(90%,460px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-      text-align: center;
+      background:linear-gradient(180deg,#FFF8DC 0%,#FFEBA3 100%);
+      border-radius:22px;
+      padding:26px 24px 32px;
+      width:min(90%,460px);
+      box-shadow:0 8px 24px rgba(0,0,0,0.25);
+      text-align:center;
+      transition:transform .3s ease;
     }
 
+    /* MODAL AVALIAÇÃO PREMIUM */
     #ratingModal .modal-box {
-      background: linear-gradient(180deg,#fffef5 0%,#fff4cc 100%);
+      background:linear-gradient(180deg,#fffef5 0%,#fff4cc 100%);
+      box-shadow:0 6px 20px rgba(0,0,0,0.2);
     }
-
+    #ratingModal h2 {
+      font-size:1.4rem;
+      color:#333;
+      margin-bottom:.5rem;
+    }
+    #ratingModal .stars {
+      font-size:2.2rem;
+      text-shadow:0 0 6px rgba(255,200,50,0.7);
+      margin:10px 0;
+    }
+    #ratingModal p {
+      color:#444;
+      font-size:1rem;
+      margin-top:.5rem;
+      line-height:1.4;
+    }
     #ratingModal .btn {
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      padding: .6rem 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      font-weight:600;
+      border:none;
+      border-radius:10px;
+      padding:.6rem 1rem;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      cursor:pointer;
+      transition:all .2s ease;
     }
+    #ratingModal .btn:hover { transform:scale(1.05); }
+    #btnRatingNow { background:#ffd54f; }
+    #btnRatingLater { background:#fff; border:1px solid #ccc; }
+    #btnRatingNever { background:#e8e8e8; color:#555; border:1px solid #d0d0d0; }
   </style>
 </head>
-
 <body>
-
   <div id="menuContainer">
-
-    <!-- HEADER -->
     <header>
       <div style="display:flex;align-items:center;gap:8px;">
-        <div class="notif-icon" onclick="window.openStoryModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <div class="notif-icon" title="História do Projeto" onclick="window.openStoryModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
             <path d="M3 8l9 6 9-6"></path>
             <path d="M21 8v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path>
           </svg>
         </div>
-
         <div class="diamond" id="diamondBtn" title="Apoiar Projeto">💎</div>
       </div>
-
       <button id="logoutBtn" class="btn">🚪 Sair</button>
     </header>
 
-    <!-- MAIN -->
     <main>
+      <div class="saudacao">
+        👋 Olá! Seja bem vindo<br>Ao Pintando a Palavra.
+      </div>
 
       <div class="menu">
         <button onclick="abrirTela('app/index.html','app')">📖 Histórias</button>
         <button onclick="abrirTela('atividades/index.html','atividades')">🎨 Atividades</button>
         <button onclick="abrirTela('pdfcompleto/index.html','pdfcompleto')">📚 PDF Completo</button>
-        <button onclick="openBibleKids()">📖 Bíblia Kids</button>
       </div>
-
+      
       <div class="socials">
         <button onclick="window.open('https://www.instagram.com/pintandoapalavra_', '_blank')">📸 Instagram</button>
         <button onclick="window.open('https://www.facebook.com/share/1CYaATKtFQ/', '_blank')">📘 Facebook</button>
       </div>
-
     </main>
   </div>
 
-  <!-- IFRAME -->
   <iframe id="conteudo" style="display:none;width:100%;height:100vh;border:none;"></iframe>
 
-  <!-- MODAL APOIO -->
+  <!-- 💎 Modal Apoiar Projeto -->
   <div id="supportModal" class="modal-backdrop">
     <div class="modal-box">
       <h2>Seja Premium</h2>
       <p>Ajude o Pintando a Palavra a alcançar mais famílias. 💛</p>
-      <div style="display:flex; gap:.6rem; justify-content:center;">
+      <div style="display:flex; justify-content:center; gap:.6rem;">
         <button class="btn" onclick="window.closeSupportModal()">Agora não</button>
         <button class="btn" id="btnApoiar">💳 Apoiar agora</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL HISTÓRIA -->
+  <!-- 📜 Modal História -->
   <div id="storyModal" class="modal-backdrop">
     <div class="modal-box" style="text-align:left;">
       <h2>Atualização especial!</h2>
@@ -244,27 +269,13 @@
     </div>
   </div>
 
-  <!-- MODAL BÍBLIA KIDS -->
-  <div id="bibleKidsModal" class="modal-backdrop">
-    <div class="modal-box">
-      <h2>📖 Bíblia Kids</h2>
-      <p>Estamos preparando algo especial!<br>
-      A Bíblia Kids estará disponível em breve. 🙏✨</p>
-
-      <div style="margin-top:1.5rem;">
-        <button class="btn" onclick="closeBibleKids()">Fechar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL AVALIAÇÃO -->
+  <!-- ⭐ Modal Avaliação Premium -->
   <div id="ratingModal" class="modal-backdrop">
     <div class="modal-box">
       <h2>Gostaria de avaliar?</h2>
       <div class="stars">⭐️⭐️⭐️⭐️⭐️</div>
       <p>Seu apoio ajuda o Pintando a Palavra a alcançar mais famílias. 💛</p>
-
-      <div style="display:flex; gap:.6rem; justify-content:center; margin-top:1.5rem;">
+      <div style="display:flex; justify-content:center; gap:.6rem; margin-top:1.5rem;">
         <button class="btn" id="btnRatingNow">Avaliar agora</button>
         <button class="btn" id="btnRatingLater">Depois</button>
         <button class="btn" id="btnRatingNever">Nunca</button>
@@ -272,10 +283,8 @@
     </div>
   </div>
 
-  <!-- AUDIO -->
   <script src="audio/audioController.js" defer></script>
 
-  <!-- SCRIPT MENU -->
   <script>
     const diamondBtn=document.getElementById("diamondBtn");
     const supportModal=document.getElementById("supportModal");
@@ -300,52 +309,42 @@
     });
 
     function abrirTela(src,tela){
-      document.getElementById("menuContainer").style.display="none";
+      const menu=document.getElementById("menuContainer");
       const iframe=document.getElementById("conteudo");
+      menu.style.display="none";
       iframe.style.display="block";
       iframe.src=src;
       history.pushState({tela},"","#"+tela);
     }
+    window.abrirTela=abrirTela;
 
     window.onpopstate=function(){
-      document.getElementById("conteudo").style.display="none";
-      document.getElementById("menuContainer").style.display="block";
+      const iframe=document.getElementById("conteudo");
+      const menu=document.getElementById("menuContainer");
+      iframe.style.display="none";
+      menu.style.display="block";
       history.replaceState({}, "", location.pathname);
     };
   </script>
 
-  <!-- SCRIPT BÍBLIA KIDS -->
-  <script>
-    const bibleKidsModal=document.getElementById("bibleKidsModal");
-
-    function openBibleKids(){
-      bibleKidsModal.classList.add("open");
-    }
-    function closeBibleKids(){
-      bibleKidsModal.classList.remove("open");
-    }
-  </script>
-
-  <!-- SCRIPT AVALIAÇÃO -->
+  <!-- ⭐ Script do Modal de Avaliação -->
   <script>
     const ratingModal=document.getElementById("ratingModal");
     const btnRatingNow=document.getElementById("btnRatingNow");
     const btnRatingLater=document.getElementById("btnRatingLater");
     const btnRatingNever=document.getElementById("btnRatingNever");
 
-    function openRatingModal(){ ratingModal.classList.add("open"); }
-    function closeRatingModal(){ ratingModal.classList.remove("open"); }
+    function openRatingModal(){ratingModal.classList.add("open");}
+    function closeRatingModal(){ratingModal.classList.remove("open");}
 
     function verificarModalAvaliacao(){
       const status=localStorage.getItem("pp_rating_status");
       const lastTime=localStorage.getItem("pp_rating_time");
-
-      if(status==="never" || status==="done") return;
-
-      if(status==="later" && lastTime){
-        if(Date.now() - parseInt(lastTime,10) < 24*60*60*1000) return;
+      if(status==="never"||status==="done")return;
+      if(status==="later"&&lastTime){
+        const diff=Date.now()-parseInt(lastTime,10);
+        if(diff<24*60*60*1000)return;
       }
-
       openRatingModal();
     }
 
@@ -353,13 +352,11 @@
       localStorage.setItem("pp_rating_status","done");
       closeRatingModal();
     });
-
     btnRatingLater.addEventListener("click",()=>{
       localStorage.setItem("pp_rating_status","later");
       localStorage.setItem("pp_rating_time",Date.now());
       closeRatingModal();
     });
-
     btnRatingNever.addEventListener("click",()=>{
       localStorage.setItem("pp_rating_status","never");
       closeRatingModal();
@@ -367,6 +364,5 @@
 
     window.addEventListener("load",verificarModalAvaliacao);
   </script>
-
 </body>
 </html>
