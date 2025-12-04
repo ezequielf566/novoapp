@@ -1,4 +1,4 @@
-<!-- 🔸 Pintando a Palavra — Menu FINAL Premium (100% Responsivo + Centralizado) -->
+<!-- 🔸 Pintando a Palavra — Menu PREMIUM FINAL (4 Menus + Centralizado + Modal Bíblia Kids) -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -23,7 +23,7 @@
 
     /* HEADER RESPONSIVO */
     header {
-      height: clamp(70px, 10vh, 90px); /* Altura responsiva */
+      height: clamp(70px, 10vh, 90px);
       background: linear-gradient(90deg,#ffd54f,#ffea80);
       padding: 0 1.2rem;
       display: flex;
@@ -42,7 +42,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform .2s ease;
     }
 
     .notif-icon svg {
@@ -52,9 +51,7 @@
       filter: drop-shadow(0 0 4px rgba(255,213,79,0.6));
     }
 
-    .notif-icon:hover svg { transform: scale(1.1); }
-
-    /* DIAMANTE GIRANDO */
+    /* DIAMANTE */
     .diamond {
       margin-left: 10px;
       font-size: 1.5rem;
@@ -81,17 +78,17 @@
       gap: 6px;
     }
 
-    /* MAIN CENTRALIZADO EM QUALQUER TELA */
+    /* MAIN SUPER CENTRALIZADO */
     main {
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* CENTRALIZA NA TELA */
+      justify-content: center;
       align-items: center;
       text-align: center;
-      gap: 2.5rem;
+      gap: 2.4rem;
       padding: 1rem;
-      min-height: calc(100vh - clamp(70px, 10vh, 90px)); /* desconta o header */
+      min-height: calc(100vh - clamp(70px, 10vh, 90px));
     }
 
     /* MENU */
@@ -111,7 +108,7 @@
       font-size: 1.15rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 10px rgba(0,0,0,0.15);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4),0 4px 10px rgba(0,0,0,0.15);
       transition: all .25s ease;
     }
 
@@ -132,15 +129,16 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all .25s ease;
       box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      transition: all .25s ease;
     }
 
     .socials button:hover { background:#fff2b3; transform: scale(1.05); }
 
     /* MODAIS BASE */
     .modal-backdrop {
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background: rgba(255,240,180,0.45);
       backdrop-filter: blur(4px);
       display: none;
@@ -149,23 +147,23 @@
       z-index: 1200;
       padding: 16px;
       opacity: 0;
-      transition: opacity .3s ease;
+      transition: opacity .25s ease;
     }
+
     .modal-backdrop.open { display: flex; opacity: 1; }
 
     .modal-box {
       background: linear-gradient(180deg,#FFF8DC 0%,#FFEBA3 100%);
       border-radius: 22px;
-      padding: 26px 24px 32px;
+      padding: 28px 24px 32px;
       width: min(90%, 460px);
       box-shadow: 0 8px 24px rgba(0,0,0,0.25);
       text-align: center;
     }
 
-    /* MODAL AVALIAÇÃO PREMIUM */
+    /* MODAL AVALIAÇÃO */
     #ratingModal .modal-box {
       background: linear-gradient(180deg,#fffef5 0%,#fff4cc 100%);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
     }
 
     #ratingModal .stars {
@@ -209,20 +207,22 @@
       <button id="logoutBtn" class="btn">🚪 Sair</button>
     </header>
 
-    <!-- MAIN (centralizado real) -->
+    <!-- MAIN -->
     <main>
+
       <div class="menu">
         <button onclick="abrirTela('app/index.html','app')">📖 Histórias</button>
         <button onclick="abrirTela('atividades/index.html','atividades')">🎨 Atividades</button>
         <button onclick="abrirTela('pdfcompleto/index.html','pdfcompleto')">📚 PDF Completo</button>
+        <button onclick="openBibleKids()">📖 Bíblia Kids</button>
       </div>
 
       <div class="socials">
         <button onclick="window.open('https://www.instagram.com/pintandoapalavra_', '_blank')">📸 Instagram</button>
         <button onclick="window.open('https://www.facebook.com/share/1CYaATKtFQ/', '_blank')">📘 Facebook</button>
       </div>
-    </main>
 
+    </main>
   </div>
 
   <!-- IFRAME -->
@@ -252,6 +252,19 @@
       </p>
       <div style="text-align:center;margin-top:1.5rem;">
         <button class="btn" onclick="window.closeStoryModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL BÍBLIA KIDS -->
+  <div id="bibleKidsModal" class="modal-backdrop">
+    <div class="modal-box">
+      <h2>📖 Bíblia Kids</h2>
+      <p>Estamos preparando algo especial!<br>
+      A Bíblia Kids estará disponível em breve. 🙏✨</p>
+
+      <div style="margin-top:1.5rem;">
+        <button class="btn" onclick="closeBibleKids()">Fechar</button>
       </div>
     </div>
   </div>
@@ -299,20 +312,30 @@
     });
 
     function abrirTela(src,tela){
-      const menu=document.getElementById("menuContainer");
+      document.getElementById("menuContainer").style.display="none";
       const iframe=document.getElementById("conteudo");
-      menu.style.display="none";
       iframe.style.display="block";
       iframe.src=src;
       history.pushState({tela},"","#"+tela);
     }
-    window.abrirTela=abrirTela;
 
     window.onpopstate=function(){
       document.getElementById("conteudo").style.display="none";
       document.getElementById("menuContainer").style.display="block";
       history.replaceState({}, "", location.pathname);
     };
+  </script>
+
+  <!-- SCRIPT BÍBLIA KIDS -->
+  <script>
+    const bibleKidsModal=document.getElementById("bibleKidsModal");
+
+    function openBibleKids(){
+      bibleKidsModal.classList.add("open");
+    }
+    function closeBibleKids(){
+      bibleKidsModal.classList.remove("open");
+    }
   </script>
 
   <!-- SCRIPT AVALIAÇÃO -->
