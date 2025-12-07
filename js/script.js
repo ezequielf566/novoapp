@@ -436,19 +436,31 @@ async function savePNG(){
 
   // 7) Salvar PNG — compatível com Flutter e navegador
 try {
-    const pngBase64 = out.toDataURL("image/png");
+    const pngBase64 = out.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
 
-    // Envia para o Flutter se o canal existir
+    // 🔹 Nome padrão do arquivo (corrige erro de variável inexistente)
+    const fileName = `pintando-${String(idx+1).padStart(2,'0')}-A4.png`;
+
+    // 🔹 Envia para o Flutter (nativo)
     if (window.ImageChannel && window.ImageChannel.postMessage) {
         ImageChannel.postMessage(JSON.stringify({
             filename: fileName,
             data: pngBase64
         }));
-        return; // evita download web interno
+        return; // impede download web dentro do container
     }
 } catch (e) {
     console.warn("Falha ao enviar PNG ao Flutter:", e);
 }
+
+// 🟡 Fallback: download normal no navegador
+const fileName = `pintando-${String(idx+1).padStart(2,'0')}-A4.png`;
+const a = document.createElement('a');
+a.download = fileName;
+a.href = out.toDataURL("image/png");
+document.body.appendChild(a);
+a.click();
+a.remove();
 
 // Fallback: download normal no navegador
 const a = document.createElement("a");
