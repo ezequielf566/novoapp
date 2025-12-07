@@ -434,13 +434,29 @@ async function savePNG(){
 
   URL.revokeObjectURL(url);
 
-  // 7) Baixar PNG
-  const a = document.createElement('a');
-  a.download = `pintando-${String(idx+1).padStart(2,'0')}-A4.png`;
-  a.href = out.toDataURL('image/png');
-  document.body.appendChild(a); a.click(); a.remove();
-  try{ clickSoft(); }catch(e){}
+  // 7) Salvar PNG — compatível com Flutter e navegador
+try {
+    const pngBase64 = out.toDataURL("image/png");
+
+    // Envia para o Flutter se o canal existir
+    if (window.ImageChannel && window.ImageChannel.postMessage) {
+        ImageChannel.postMessage(JSON.stringify({
+            filename: fileName,
+            data: pngBase64
+        }));
+        return; // evita download web interno
+    }
+} catch (e) {
+    console.warn("Falha ao enviar PNG ao Flutter:", e);
 }
+
+// Fallback: download normal no navegador
+const a = document.createElement("a");
+a.download = fileName;
+a.href = out.toDataURL("image/png");
+document.body.appendChild(a);
+a.click();
+a.remove();
 
 // ---------- Imprimir somente a arte (A4) ----------
 
