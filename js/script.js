@@ -451,19 +451,6 @@ try {
     console.warn("Erro ao gerar PNG:", e);
 }
 
-// Fallback: download normal no navegador
-try {
-    const fileName = `pintando-${String(idx+1).padStart(2,'0')}-A4.png`;
-    const a = document.createElement('a');
-    a.download = fileName;
-    a.href = out.toDataURL("image/png");
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-} catch (e) {
-    console.warn("Falha no fallback de download:", e);
-}
-
 // ---------- Imprimir somente a arte (A4) ----------
 
 
