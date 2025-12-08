@@ -434,21 +434,12 @@ async function savePNG(){
 
   URL.revokeObjectURL(url);
 
-  // 7) Salvar PNG — compatível com Flutter e navegador
-try {
-    const pngBase64 = out.toDataURL("image/png").split(",")[1];
-    const fileName = `pintando-${String(idx+1).padStart(2,'0')}-A4.png`;
-
-    // Se rodando no app (WebView)
-    if (window.ImageChannel && window.ImageChannel.postMessage) {
-        ImageChannel.postMessage(JSON.stringify({
-            filename: fileName,
-            data: pngBase64
-        }));
-        return; // ENCERRA AQUI → NÃO EXECUTA O DOWNLOAD WEB
-    }
-} catch (e) {
-    console.warn("Erro ao gerar PNG:", e);
+  // 7) Baixar PNG
+  const a = document.createElement('a');
+  a.download = `pintando-${String(idx+1).padStart(2,'0')}-A4.png`;
+  a.href = out.toDataURL('image/png');
+  document.body.appendChild(a); a.click(); a.remove();
+  try{ clickSoft(); }catch(e){}
 }
 
 // ---------- Imprimir somente a arte (A4) ----------
