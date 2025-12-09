@@ -508,6 +508,55 @@
       }
     })();
   </script>
+  <!-- 🔒 Interceptador seguro de download para WebView (não altera o site original) -->
+  <script>
+(function() {
+
+  // Guardamos a função original
+  const originalCreateElement = document.createElement;
+
+  // Substituímos por um wrapper que intercepta apenas <a>
+  document.createElement = function(tagName) {
+    const el = originalCreateElement.call(document, tagName);
+
+    // Só intercepta elementos <a>
+    if (tagName === "a") {
+
+      const originalClick = el.click;
+
+      el.click = function() {
+
+        // Só ativa no APP (WebView)
+        if (window.ImageChannel && typeof window.ImageChannel.postMessage === "function") {
+
+          // Se o link for uma imagem PNG gerada pelo canvas
+          if (el.href && el.href.startsWith("data:image/png;base64,")) {
+
+            const base64 = el.href.replace("data:image/png;base64,", "");
+
+            // Envia para o app nativo
+            try {
+              ImageChannel.postMessage(base64);
+              console.log("✔ PNG interceptado e enviado ao Flutter.");
+            } catch (e) {
+              console.warn("Erro ao enviar PNG ao Flutter:", e);
+            }
+
+            // Impede download normal (não funciona no WebView mesmo)
+            return;
+          }
+        }
+
+        // Fora do app → comportamento normal
+        return originalClick.call(el);
+      };
+    }
+
+    return el;
+  };
+
+})();
+</script>
   
 </body>  
 </html>
