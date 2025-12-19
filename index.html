@@ -6,6 +6,22 @@
   <title>Pintando a Palavra — Colorir</title>  
   <link rel="stylesheet" href="css/style.css" />  
 
+  <!-- ================= ANDROID WEBVIEW PATCH (ADICIONADO) ================= -->
+  <script>
+    // Marca apenas Android (WebView/Chrome Android). Não altera nada fora.
+    if (/Android/i.test(navigator.userAgent)) {
+      document.documentElement.classList.add("android-webview");
+    }
+  </script>
+
+  <style>
+    /* Patch VISUAL mínimo: só aproxima os menus do SVG no Android WebView */
+    .android-webview .controls { margin-top: -22px !important; }
+    .android-webview .palette  { margin-top: -8px  !important; }
+    .android-webview .pager    { margin-top:  6px  !important; }
+  </style>
+  <!-- ====================================================================== -->
+
   <style>  
     /* 🌀 Tela de carregamento */  
     #loadingOverlay {  
