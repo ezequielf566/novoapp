@@ -1,181 +1,111 @@
-* { box-sizing: border-box; }
-
-:root {
-  --bg1: #fffdf2;
-  --bg2: #ffe6a7;
-  --panel: #fff;
-  --ink: #1f2937;
-  --shadow: 0 12px 28px rgba(0, 0, 0, .12);
-  --radius: 18px;
-  --accent: #f59e0b;
-}
-
-html, body { height: 100%; margin: 0; }
+/* --- Reset --- */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
-  background: linear-gradient(var(--bg1), var(--bg2));
-  color: var(--ink);
-  overflow-x: hidden;
-}
-
-/* --- Topbar & Progress Widget --- */
-.topbar { display: flex; justify-content: flex-end; padding: 12px 16px; }
-
-.progress-widget { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; max-width: min(620px, 92vw); margin-left: auto; }
-.progress-widget .counter { display: flex; align-items: center; gap: 8px; font-weight: 800; color: #111; font-size: clamp(16px, 2.4vw, 28px); }
-.progress-widget .star-icon { font-size: 1.1em; color: #f4b400; filter: drop-shadow(0 1px 0 rgba(0,0,0,0.35)); }
-
-.progressbar {
-  position: relative;
-  width: min(560px, 92vw);
-  height: 42px;
-  padding: 5px;
-  border: 4px solid #111;
-  border-radius: 9999px;
-  background: transparent;
-}
-
-.progressbar .track {
-  position: absolute; inset: 5px;
-  background: #fff;
-  border-radius: 9999px;
-  overflow: hidden;
-}
-
-.progress-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: #9dd39a; }
-
-/* --- Área do Desenho (Stage) --- */
-.wrap {
-  max-width: 1024px;
-  margin: 0 auto;
-  padding: 12px;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(#fffdf2, #ffe6a7);
+  font-family: system-ui, sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  overflow-y: auto; /* Garante que a rolagem funcione */
 }
 
-.stage {
+/* --- Topbar --- */
+.topbar {
+  padding: 10px;
   background: #fff;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 12px;
-  text-align: center;
-  /* Abre espaço real no fundo para o conteúdo não parar embaixo dos botões fixos */
-  margin-bottom: 240px; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.progress-widget { max-width: 600px; margin: 0 auto; text-align: center; }
+.progressbar { height: 8px; background: #eee; border-radius: 4px; margin-top: 5px; }
+.progress-fill { height: 100%; background: #ffca28; width: 0%; border-radius: 4px; transition: width 0.3s; }
+
+/* --- Wrap Principal --- */
+.wrap {
+  flex: 1; /* Faz o conteúdo crescer e empurrar o rodapé */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px;
+}
+
+/* --- Palco do Desenho --- */
+.stage {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 15px;
+  margin-bottom: 30px; /* Espaço antes do painel amarelo */
 }
 
 .svgMount {
   width: 100%;
-  background: #fff;
-  border-radius: var(--radius);
-  overflow-y: auto;
-  overflow-x: hidden;
+  aspect-ratio: 4/3; /* Mantém proporção boa para tablet */
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  position: relative;
-  margin: 0 auto;
-  /* No tablet deitado, limitamos a altura para não sumir */
-  max-height: 55vh; 
-  aspect-ratio: 16/10;
 }
+.svgMount svg { width: 100%; height: 100%; display: block; }
 
-.svgMount svg { width: 100%; height: auto; display: block; }
-
-/* --- Rodapé de Controles (Fixo) --- */
+/* --- Painel Amarelo (AGORA NO FLUXO DA PÁGINA) --- */
 .controls {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
+  width: 100%;
   background: #ffe082;
-  /* Padding extra no fundo para barras de navegação de tablets */
-  padding: 15px 10px 30px 10px;
+  padding: 30px 15px;
+  border-radius: 30px 30px 0 0; /* Curva no topo */
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
-  gap: 12px;
   align-items: center;
-  z-index: 1000;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+  gap: 20px;
 }
 
-/* --- Paleta de Cores Responsiva --- */
 .swatches {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  flex-wrap: nowrap; 
-  width: 100%;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 600px;
 }
 
 .sw {
-  flex: 1 1 auto;
-  max-width: 50px;
-  aspect-ratio: 1/1;
+  width: 48px;
+  height: 48px;
   border-radius: 50% !important;
-  border: 3px solid white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: 3px solid #fff;
   background: var(--c);
   cursor: pointer;
-  padding: 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.sw.custom {
-  border-radius: 8px !important;
-  border: 3px dashed #555 !important;
-  position: relative;
+.tools {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-
-.sw.custom::after {
-  content: "+";
-  color: #555;
-  font-weight: bold;
-  font-size: 14px;
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* --- Botões e Ferramentas --- */
-.tools { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
 .btn {
-  background: #ffb703;
-  color: #222;
-  border: 0;
+  padding: 12px 20px;
   border-radius: 12px;
-  padding: 10px 14px;
+  border: none;
+  background: #ffb703;
+  font-weight: bold;
   cursor: pointer;
-  font-weight: 700;
-  box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+  box-shadow: 0 4px 0 #e6a700;
 }
+.btn.primary { background: #2ecc71; color: #fff; box-shadow: 0 4px 0 #27ae60; }
 
-.btn.primary { background: #2ecc71; color: #fff; }
-.btn.active { outline: 3px solid rgba(0,0,0,0.25); transform: translateY(-1px); }
-
-.pager { display: flex; gap: 12px; align-items: center; justify-content: center; }
-.navbtn { min-width: 42px; min-height: 36px; border: 0; border-radius: 10px; background: #ffd166; cursor: pointer; }
-
-/* --- Zoom minimalista --- */
-.zoom-controls { position: absolute; bottom: 10px; right: 10px; display: flex; align-items: center; gap: 8px; z-index: 1001; }
-.zoom-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; }
-#zoom-in, #zoom-out { font-size: 28px; font-weight: bold; color: #333; background: none !important; }
-
-/* --- Ajustes de Tela --- */
-@media (max-width: 640px) {
-  .svgMount { aspect-ratio: 3/4; max-height: 50vh; }
-  .sw { max-width: 32px; }
-  .btn { padding: 8px 10px; font-size: 12px; }
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-weight: bold;
 }
-
-/* Ajuste crítico para Tablet Deitado */
-@media (orientation: landscape) and (max-height: 600px) {
-  .svgMount { max-height: 42vh; } 
-  .stage { margin-bottom: 200px; }
-  .controls { padding: 8px 10px 15px 10px; gap: 8px; }
-}
-
-@media print {
-  .topbar, .controls { display: none !important; }
-  body { background: #fff; }
-  .stage { box-shadow: none; margin-bottom: 0; }
+.navbtn {
+  width: 50px; height: 40px; border-radius: 10px; border: none; background: #ffd166; cursor: pointer;
 }
