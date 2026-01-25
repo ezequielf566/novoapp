@@ -39,9 +39,27 @@
       background: rgba(255,255,255,0.3); border-radius: 10px; margin: 1px;
     }
 
-    /* ÁREA DO DESENHO */
+    /* ÁREA DO DESENHO - OTIMIZADA PARA FLUIDEZ */
     .wrap { flex: 1; display:flex; flex-direction:column; width: 100%; max-width:1024px; margin:0 auto; padding:8px; overflow: hidden; }
-    .stage { background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .stage { 
+      background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); 
+      flex: 1; position: relative; display: flex; align-items: center; justify-content: center; 
+      overflow: hidden;
+      transform: translateZ(0); /* Aceleração de Hardware */
+    }
+
+    /* Otimização do Canvas/SVG para não dar LAG no deslize */
+    .svgMount {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      will-change: transform;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+    #svgMount svg {
+      will-change: transform;
+      transform: translateZ(0);
+      shape-rendering: geometricPrecision;
+    }
 
     /* CONTROLES */
     .controls {
@@ -154,10 +172,23 @@
       const colorPickerInput = document.getElementById("colorPickerInput");
       const starSound = document.getElementById("starSound");
       const starCountEl = document.getElementById("starCount");
+      const mount = document.getElementById("svgMount");
       let popupRef = null;
       let lastStarCount = 0;
 
       const EXTRA_COLORS = ["#FF6F61","#F06292","#BA68C8","#9575CD","#4FC3F7","#4DD0E1","#81C784","#AED581","#FFD54F","#FFB74D","#A1887F","#BDBDBD","#EF5350","#FF8A65","#FFF176","#C0CA33","#26A69A","#29B6F6", "#444", "#000"];
+
+      // --- 🛡️ TRAVA ANTIDUPLICIDADE (Limpa SVG antigo ao mudar de página) ---
+      const observerLimpeza = new MutationObserver(() => {
+        const svgs = mount.querySelectorAll("svg");
+        if (svgs.length > 1) {
+          // Remove todos exceto o último que entrou (o mais novo)
+          for (let i = 0; i < svgs.length - 1; i++) {
+            svgs[i].remove();
+          }
+        }
+      });
+      observerLimpeza.observe(mount, { childList: true });
 
       const checkStarSound = () => {
         const currentStars = parseInt(starCountEl.textContent) || 0;
@@ -220,11 +251,15 @@
       };
 
       (function initZoomSystem() {
-        const mount = document.getElementById("svgMount");
         const state = { scale: 1, tx: 0, ty: 0 };
         let svg = null;
         function update() {
-          if (svg) svg.style.transform = `translate(${state.tx}px, ${state.ty}px) scale(${state.scale})`;
+          if (svg) {
+            // Usa requestAnimationFrame para o deslize ser amanteigado
+            requestAnimationFrame(() => {
+               svg.style.transform = `translate(${state.tx}px, ${state.ty}px) scale(${state.scale})`;
+            });
+          }
         }
         function attach(el) {
           svg = el;
