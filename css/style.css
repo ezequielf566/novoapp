@@ -1,6 +1,6 @@
-/* style.css - VERSÃO COMPLETA E CORRIGIDA */
+/* style.css - VERSÃO COM ALTA PERFORMANCE E FLUIDEZ */
 
-/* 1. RESET E VARIAVEIS (Baseado no seu index/style anterior) */
+/* 1. RESET E VARIAVEIS */
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 :root {
   --bg1: #fffdf2; --bg2: #ffe6a7;
@@ -11,41 +11,50 @@
 html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; overflow: hidden; }
 body { background: linear-gradient(var(--bg1), var(--bg2)); display: flex; flex-direction: column; }
 
-/* 2. ÁREA TÉCNICA DO DESENHO (Onde corrigimos o "subir") */
+/* 2. ÁREA TÉCNICA DO DESENHO (Otimizada para deslize suave) */
 .svgMount {
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden; 
   display: flex;
-  
-  /* ALINHAMENTO: Mudado para flex-start para o desenho subir */
   align-items: flex-start; 
   justify-content: center;
-  
-  /* Espaçamento mínimo no topo para não colar na borda do celular */
   padding-top: 10px; 
 
+  /* Gestos e Performance */
   touch-action: none; 
   user-select: none;
   -webkit-user-select: none;
+  
+  /* Força aceleração de hardware no container pai */
+  transform: translateZ(0);
+  perspective: 1000;
+  backface-visibility: hidden;
 }
 
-/* O SVG dentro da montagem */
+/* O SVG - Aqui é onde eliminamos o Lag */
 #svgMount svg {
   display: block;
-  /* Prioriza visibilidade total sem distorcer */
   width: auto; 
   max-width: 100%;
   height: auto;
-  max-height: 95%; /* Margem de segurança para não ser cortado pelos controles abaixo */
-  
+  max-height: 95%; 
   margin: 0 auto; 
+
+  /* ACELERAÇÃO POR HARDWARE: Faz o celular tratar o SVG como uma camada de vídeo */
   will-change: transform;
+  transform: translateZ(0); /* Força 3D Rendering */
+  backface-visibility: hidden;
+  perspective: 1000;
+  
+  /* Melhora a qualidade das linhas durante o zoom */
+  shape-rendering: geometricPrecision; 
+  
   cursor: crosshair; 
 }
 
-/* 3. ESTRUTURA VISUAL (Stage e Wrap) */
+/* 3. ESTRUTURA VISUAL */
 .wrap { flex: 1; display: flex; flex-direction: column; width: 100%; max-width: 1024px; margin: 0 auto; padding: 8px; overflow: hidden; }
 .stage { 
   background: #fff; 
@@ -54,9 +63,11 @@ body { background: linear-gradient(var(--bg1), var(--bg2)); display: flex; flex-
   flex: 1; 
   position: relative; 
   display: flex; 
-  align-items: flex-start; /* Força o conteúdo do palco a começar do topo */
+  align-items: flex-start; 
   justify-content: center; 
-  overflow: hidden; 
+  overflow: hidden;
+  /* Garante que o palco também seja uma camada otimizada */
+  transform: translateZ(0);
 }
 
 /* 4. MODO DE IMPRESSÃO */
@@ -65,5 +76,5 @@ body { background: linear-gradient(var(--bg1), var(--bg2)); display: flex; flex-
   .controls, .topbar, #loadingOverlay, .pager { display: none !important; }
   .stage { box-shadow: none; border: 0; padding: 0; }
   .svgMount { overflow: visible; height: auto; }
-  #svgMount svg { max-height: 100%; width: 100%; }
+  #svgMount svg { max-height: 100%; width: 100%; transform: none !important; }
 }
